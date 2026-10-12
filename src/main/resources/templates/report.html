@@ -220,6 +220,28 @@
             .serp-desc {
                 font-size: 8pt !important;
             }
+
+            /* Disclaimer compatto in stampa */
+            .disclaimer-card {
+                padding: 6px 8px !important;
+                margin-top: 6px !important;
+                margin-bottom: 4px !important;
+                background-color: #f8fafc !important;
+                border: 1px solid #e2e8f0 !important;
+                border-left: 3px solid #f59e0b !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            .disclaimer-card h6 {
+                font-size: 7.5pt !important;
+                margin-bottom: 2px !important;
+            }
+
+            .disclaimer-card p {
+                font-size: 6.8pt !important;
+                line-height: 1.25 !important;
+            }
         }
     </style>
 </head>
@@ -712,6 +734,17 @@
                 </div>
             </div>
 
+        </div>
+
+        <!-- Nota Informativa e Limitazione di Responsabilità (Disclaimer) -->
+        <div class="card border-0 bg-white border-start border-4 border-warning shadow-sm rounded-3 p-3 mt-4 mb-2 disclaimer-card">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <i class="bi bi-shield-exclamation text-warning fs-5"></i>
+                <h6 class="fw-bold mb-0 text-dark small text-uppercase">Nota Informativa e Limitazione di Responsabilità (Disclaimer)</h6>
+            </div>
+            <p class="text-secondary small mb-0" style="line-height: 1.5; font-size: 0.8rem;">
+                Le metriche e le stime contenute in questo report provengono da strumenti di terze parti e fotografano lo stato del sito alla data odierna. Il posizionamento organico (SEO) e le performance delle campagne (SEM) dipendono da fattori esterni, concorrenziali e da continui aggiornamenti degli algoritmi dei motori di ricerca. Di conseguenza, le raccomandazioni strategiche fornite si configurano come obbligazione di mezzi e non garantiscono il raggiungimento di specifici risultati commerciali, volumi di traffico o posizioni in SERP. Si esclude ogni responsabilità per danni derivanti dall'applicazione parziale o errata dei suggerimenti qui esposti.
+            </p>
         </div>
 
     </main>
