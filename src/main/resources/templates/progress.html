@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analisi in corso - SEO & SEM Analyzer</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <link href="/css/custom.css" rel="stylesheet">
+</head>
+<body class="bg-light text-dark d-flex flex-column min-vh-100">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-3">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="/">
+                <span class="badge bg-primary p-2 rounded-3"><i class="bi bi-speedometer2 fs-5"></i></span>
+                <span>SEO & SEM <span class="text-primary">Analyzer</span></span>
+            </a>
+            <div class="d-flex align-items-center gap-2">
+                <span class="badge bg-secondary-subtle text-light border border-secondary px-3 py-2">
+                    <i class="bi bi-hash"></i> Job: <strong th:text="${jobId}">abc123</strong>
+                </span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container my-4 flex-grow-1">
+        
+        <!-- Target Info & Progress -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 mb-4 bg-white">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
+                <div>
+                    <span class="text-muted small text-uppercase fw-bold">Sito in esame</span>
+                    <h2 class="h4 fw-bold mb-0 text-break text-primary d-flex align-items-center gap-2">
+                        <i class="bi bi-globe"></i>
+                        <span th:text="${targetUrl}">https://example.com</span>
+                    </h2>
+                </div>
+                <div class="text-md-end">
+                    <div id="statusBadge" class="badge bg-primary-subtle text-primary border border-primary px-3 py-2 fs-6 rounded-pill">
+                        <span class="spinner-grow spinner-grow-sm me-1" role="status" aria-hidden="true"></span>
+                        <span id="statusText">Scansione in corso...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Progress Bar -->
+            <div class="mt-2">
+                <div class="d-flex justify-content-between small fw-bold mb-1">
+                    <span id="currentPhaseText" class="text-secondary">Avvio connessione...</span>
+                    <span id="progressPercentage" class="text-primary">0%</span>
+                </div>
+                <div class="progress" style="height: 12px; border-radius: 6px;">
+                    <div id="progressBar" class="progress-bar progress-bar-striped progress-bar-animated bg-primary" 
+                         role="progressbar" style="width: 5%;" aria-valuenow="5" aria-valuemin="0" aria-valuemax="100">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Visualizzazione Grafica dei Log & Avanzamento -->
+        <div class="row g-4 mb-4">
+            
+            <!-- Grafico Avanzamento Fasi -->
+            <div class="col-lg-7">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                            <i class="bi bi-bar-chart-steps text-primary"></i>
+                            Stato Avanzamento Fasi di Scansione
+                        </h5>
+                        <span class="badge bg-light text-muted border">Live</span>
+                    </div>
+                    <div style="position: relative; height: 260px;">
+                        <canvas id="phasesChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grafico Distribuzione Eventi Log -->
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm rounded-4 p-4 h-100 bg-white">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                            <i class="bi bi-pie-chart text-success"></i>
+                            Distribuzione Eventi di Log
+                        </h5>
+                        <span class="badge bg-light text-muted border">Eventi: <span id="eventCountBadge">0</span></span>
+                    </div>
+                    <div style="position: relative; height: 260px;" class="d-flex align-items-center justify-content-center">
+                        <canvas id="logLevelsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Terminale Log in Tempo Reale -->
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden mb-4">
+            <div class="bg-dark text-light p-3 d-flex justify-content-between align-items-center border-bottom border-secondary">
+                <div class="d-flex align-items-center gap-2">
+                    <span class="d-inline-block rounded-circle bg-danger" style="width: 12px; height: 12px;"></span>
+                    <span class="d-inline-block rounded-circle bg-warning" style="width: 12px; height: 12px;"></span>
+                    <span class="d-inline-block rounded-circle bg-success" style="width: 12px; height: 12px;"></span>
+                    <span class="fw-bold ms-2 small font-monospace"><i class="bi bi-terminal me-1"></i>STREAM DEI LOG IN TEMPO REALE</span>
+                </div>
+                <div class="small text-muted font-monospace">
+                    Connessione Server-Sent Events (SSE)
+                </div>
+            </div>
+            <div id="terminalConsole" class="bg-black text-light p-3 font-monospace small" 
+                 style="height: 250px; overflow-y: auto; font-size: 0.88rem; line-height: 1.6;">
+                <div class="text-secondary"><span class="text-info">[SISTEMA]</span> Inizializzazione stream SSE per il job <span th:text="${jobId}"></span>...</div>
+            </div>
+        </div>
+
+        <!-- Banner di Completamento -->
+        <div id="completionBanner" class="alert alert-success d-none shadow-sm rounded-4 p-4 text-center" role="alert">
+            <div class="d-flex align-items-center justify-content-center gap-2 fs-5 fw-bold mb-2">
+                <i class="bi bi-check-circle-fill text-success fs-3"></i>
+                <span>Analisi completata con successo!</span>
+            </div>
+            <p class="mb-3 text-secondary">
+                Generazione del report diagnostico e delle raccomandazioni terminata. Reindirizzamento in corso...
+            </p>
+            <a id="goToReportBtn" th:href="@{'/report/' + ${jobId}}" class="btn btn-success fw-bold px-4 py-2 rounded-pill">
+                Apri Report Subito <i class="bi bi-arrow-right"></i>
+            </a>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-top py-3 mt-auto">
+        <div class="container text-center text-muted small">
+            &copy; 2026 SEO & SEM Analyzer &bull; Spring Boot & Thymeleaf
+        </div>
+    </footer>
+
+    <!-- Script di monitoraggio SSE e Chart.js -->
+    <script th:inline="javascript">
+        const jobId = /*[[${jobId}]]*/ 'default';
+        const progressBar = document.getElementById('progressBar');
+        const progressPercentage = document.getElementById('progressPercentage');
+        const currentPhaseText = document.getElementById('currentPhaseText');
+        const terminalConsole = document.getElementById('terminalConsole');
+        const completionBanner = document.getElementById('completionBanner');
+        const statusBadge = document.getElementById('statusBadge');
+        const statusText = document.getElementById('statusText');
+        const eventCountBadge = document.getElementById('eventCountBadge');
+
+        let totalEvents = 0;
+        const levelCounts = { INFO: 0, SUCCESS: 0, WARNING: 0, ERROR: 0 };
+
+        // 1. Configurazione Grafico delle Fasi (Bar Chart orizzontale)
+        const phasesCtx = document.getElementById('phasesChart').getContext('2d');
+        const phaseLabels = ['Connessione', 'Crawling', 'File Tecnici', 'Audit SEO', 'Audit SEM', 'Report Finale'];
+        const phaseProgress = [0, 0, 0, 0, 0, 0];
+
+        const phasesChart = new Chart(phasesCtx, {
+            type: 'bar',
+            data: {
+                labels: phaseLabels,
+                datasets: [{
+                    label: 'Stato di avanzamento (%)',
+                    data: phaseProgress,
+                    backgroundColor: [
+                        '#0d6efd', '#0dcaf0', '#6f42c1', '#20c997', '#fd7e14', '#198754'
+                    ],
+                    borderRadius: 6
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        beginAtZero: true,
+                        max: 100,
+                        ticks: { callback: v => v + '%' }
+                    }
+                },
+                plugins: {
+                    legend: { display: false }
+                }
+            }
+        });
+
+        // 2. Configurazione Grafico Livelli Log (Doughnut Chart)
+        const logLevelsCtx = document.getElementById('logLevelsChart').getContext('2d');
+        const logLevelsChart = new Chart(logLevelsCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Info', 'Success', 'Warning', 'Error'],
+                datasets: [{
+                    data: [0, 0, 0, 0],
+                    backgroundColor: ['#0d6efd', '#198754', '#ffc107', '#dc3545'],
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+
+        function mapPhaseToIndex(phaseName) {
+            const p = (phaseName || '').toUpperCase();
+            if (p.includes('CONNESSIONE')) return 0;
+            if (p.includes('CRAWLING') || p.includes('NETWORK')) return 1;
+            if (p.includes('FILE TECNICI')) return 2;
+            if (p.includes('SEO')) return 3;
+            if (p.includes('SEM')) return 4;
+            if (p.includes('REPORT') || p.includes('COMPLETATO')) return 5;
+            return 0;
+        }
+
+        // 3. Connessione Server-Sent Events (SSE)
+        const eventSource = new EventSource('/api/stream/' + jobId);
+
+        eventSource.addEventListener('log', function(e) {
+            const event = JSON.parse(e.data);
+            totalEvents++;
+            eventCountBadge.textContent = totalEvents;
+
+            // Aggiorna contatori livelli
+            const lvl = event.level || 'INFO';
+            if (levelCounts[lvl] !== undefined) {
+                levelCounts[lvl]++;
+            } else {
+                levelCounts['INFO']++;
+            }
+            logLevelsChart.data.datasets[0].data = [
+                levelCounts.INFO, levelCounts.SUCCESS, levelCounts.WARNING, levelCounts.ERROR
+            ];
+            logLevelsChart.update();
+
+            // Aggiorna fasi
+            const pIndex = mapPhaseToIndex(event.phase);
+            for (let i = 0; i <= pIndex; i++) {
+                phaseProgress[i] = Math.min(100, Math.max(phaseProgress[i], event.progress));
+            }
+            phasesChart.data.datasets[0].data = phaseProgress;
+            phasesChart.update();
+
+            // Aggiorna progress bar
+            if (event.progress !== undefined) {
+                progressBar.style.width = event.progress + '%';
+                progressBar.setAttribute('aria-valuenow', event.progress);
+                progressPercentage.textContent = event.progress + '%';
+            }
+
+            if (event.phase) {
+                currentPhaseText.textContent = '[' + event.phase + '] ' + event.message;
+            }
+
+            // Aggiungi al terminale
+            const line = document.createElement('div');
+            let colorClass = 'text-info';
+            if (event.level === 'SUCCESS') colorClass = 'text-success';
+            if (event.level === 'WARNING') colorClass = 'text-warning';
+            if (event.level === 'ERROR') colorClass = 'text-danger';
+
+            line.innerHTML = `<span class="text-secondary">[${event.timestamp}]</span> <span class="${colorClass} fw-bold">[${event.phase || 'INFO'}]</span> <span>${escapeHtml(event.message)}</span>`;
+            terminalConsole.appendChild(line);
+            terminalConsole.scrollTop = terminalConsole.scrollHeight;
+        });
+
+        eventSource.addEventListener('complete', function(e) {
+            eventSource.close();
+            progressBar.style.width = '100%';
+            progressBar.classList.remove('progress-bar-animated', 'progress-bar-striped');
+            progressBar.classList.add('bg-success');
+            progressPercentage.textContent = '100%';
+            currentPhaseText.textContent = 'Analisi conclusa con successo!';
+
+            // Completa tutti i grafici al 100%
+            for (let i = 0; i < phaseProgress.length; i++) phaseProgress[i] = 100;
+            phasesChart.data.datasets[0].data = phaseProgress;
+            phasesChart.update();
+
+            statusBadge.className = 'badge bg-success text-white px-3 py-2 fs-6 rounded-pill';
+            statusText.textContent = 'Completato';
+
+            completionBanner.classList.remove('d-none');
+
+            // Reindirizza al report dopo 1.5 secondi
+            setTimeout(() => {
+                window.location.href = '/report/' + jobId;
+            }, 1500);
+        });
+
+        eventSource.addEventListener('error', function(e) {
+            console.error('SSE Error:', e);
+            statusBadge.className = 'badge bg-danger text-white px-3 py-2 fs-6 rounded-pill';
+            statusText.textContent = 'Errore Connessione';
+        });
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,798 @@
+<!DOCTYPE html>
+<html lang="it" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="'Report SEO & SEM - ' + ${report.targetUrl}">Report SEO & SEM</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+    <link href="/css/custom.css" rel="stylesheet">
+    <style>
+        .code-box {
+            background-color: #1e1e1e;
+            color: #d4d4d4;
+            padding: 0.85rem;
+            border-radius: 0.4rem;
+            font-family: monospace;
+            font-size: 0.82rem;
+            position: relative;
+        }
+        .serp-card {
+            border: 1px solid #dfe1e5;
+            border-radius: 12px;
+            padding: 16px;
+            background: #ffffff;
+            box-shadow: 0 1px 6px rgba(32,33,36,0.1);
+        }
+        .serp-sponsored {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #202124;
+        }
+        .serp-url {
+            font-size: 0.85rem;
+            color: #202124;
+        }
+        .serp-title {
+            color: #1a0dab;
+            font-size: 1.2rem;
+            font-weight: 500;
+            text-decoration: none;
+            line-height: 1.3;
+        }
+        .serp-desc {
+            color: #4d5156;
+            font-size: 0.88rem;
+            line-height: 1.4;
+            margin-top: 4px;
+        }
+
+        /* ===== OTTIMIZZAZIONE STAMPA A4 COMPATTA (2-3 PAGINE MAX) ===== */
+        @media print {
+            @page {
+                size: A4 portrait;
+                margin: 8mm 10mm;
+            }
+
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            body {
+                background: #ffffff !important;
+                font-size: 8.5pt !important;
+                line-height: 1.25 !important;
+                color: #0f172a !important;
+            }
+
+            .no-print {
+                display: none !important;
+            }
+
+            /* Main & Container */
+            main.container {
+                max-width: 100% !important;
+                width: 100% !important;
+                padding: 0 !important;
+                margin: 0 !important;
+            }
+
+            .card {
+                box-shadow: none !important;
+                border: 1px solid #cbd5e1 !important;
+                border-radius: 6px !important;
+                padding: 6px 10px !important;
+                margin-bottom: 6px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            /* Header Report Compatto */
+            .report-header-card {
+                padding: 8px 12px !important;
+                margin-bottom: 8px !important;
+                border-bottom: 2px solid #0d6efd !important;
+            }
+
+            .report-header-card h1 {
+                font-size: 13pt !important;
+                margin: 0 0 2px 0 !important;
+            }
+
+            /* Scorecard compatta in stampa: nascondi canvas ingombranti */
+            .score-gauges canvas {
+                display: none !important;
+            }
+
+            .score-gauges .card {
+                padding: 6px !important;
+                height: auto !important;
+            }
+
+            .score-gauges .gauge-placeholder {
+                height: auto !important;
+            }
+
+            .score-gauges .score-number {
+                position: static !important;
+                font-size: 18pt !important;
+                line-height: 1.1 !important;
+                margin: 4px 0 !important;
+            }
+
+            /* Espandi i tab per stampa continua ma compatta */
+            .nav-pills {
+                display: none !important;
+            }
+
+            .tab-pane {
+                display: block !important;
+                opacity: 1 !important;
+                margin-bottom: 8px !important;
+            }
+
+            .tab-pane h4 {
+                font-size: 11pt !important;
+                margin-bottom: 4px !important;
+                border-bottom: 1px solid #e2e8f0;
+                padding-bottom: 2px;
+            }
+
+            .tab-pane h5 {
+                font-size: 10pt !important;
+                margin-bottom: 4px !important;
+            }
+
+            /* Recommendations in stampa: griglia compatta */
+            .recommendations-container {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 6px !important;
+            }
+
+            .recommendation-card {
+                padding: 6px 8px !important;
+                margin-bottom: 0 !important;
+                font-size: 8pt !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            .recommendation-card h5 {
+                font-size: 9pt !important;
+                margin-bottom: 4px !important;
+            }
+
+            .recommendation-card .p-3 {
+                padding: 4px 6px !important;
+                margin-bottom: 4px !important;
+            }
+
+            .recommendation-card .code-box {
+                font-size: 6.8pt !important;
+                padding: 4px 6px !important;
+                max-height: 80px !important;
+                overflow: hidden !important;
+                background-color: #f1f5f9 !important;
+                color: #0f172a !important;
+                border: 1px solid #cbd5e1 !important;
+            }
+
+            /* Issues diagnostica in stampa: griglia compatta a 2 colonne */
+            .issues-container {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr !important;
+                gap: 4px !important;
+            }
+
+            .issue-card {
+                width: 100% !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            .issue-card > div {
+                padding: 4px 6px !important;
+            }
+
+            .issue-card h6 {
+                font-size: 8.5pt !important;
+            }
+
+            .issue-card p {
+                font-size: 7.5pt !important;
+            }
+
+            /* SERP card compatta */
+            .serp-card {
+                padding: 8px 12px !important;
+                margin-top: 4px !important;
+            }
+
+            .serp-title {
+                font-size: 10pt !important;
+            }
+
+            .serp-desc {
+                font-size: 8pt !important;
+            }
+        }
+    </style>
+</head>
+<body class="bg-light text-dark d-flex flex-column min-vh-100">
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-3 no-print">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="/">
+                <span class="badge bg-primary p-2 rounded-3"><i class="bi bi-speedometer2 fs-5"></i></span>
+                <span>SEO & SEM <span class="text-primary">Analyzer</span></span>
+            </a>
+            <div class="d-flex align-items-center gap-2">
+                <a href="/" class="btn btn-outline-light btn-sm rounded-pill px-3">
+                    <i class="bi bi-arrow-left me-1"></i> Torna alla Home
+                </a>
+                <button onclick="window.print()" class="btn btn-primary btn-sm rounded-pill px-3">
+                    <i class="bi bi-printer me-1"></i> Stampa / Salva PDF
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container my-3 my-md-4 flex-grow-1">
+
+        <!-- Report Header Card -->
+        <div class="card border-0 shadow-sm rounded-4 p-4 mb-3 bg-white report-header-card">
+            <div class="row align-items-center">
+                <div class="col-lg-8">
+                    <div class="d-flex align-items-center gap-2 mb-1">
+                        <span class="badge bg-success-subtle text-success border border-success px-2 py-1 rounded-pill fw-semibold small">
+                            <i class="bi bi-check-circle-fill me-1"></i> Report Archiviato
+                        </span>
+                        <span class="text-muted small">
+                            <i class="bi bi-calendar3 me-1"></i> Data: <strong th:text="${report.analyzedAt}">09/10/2026</strong>
+                        </span>
+                    </div>
+                    <h1 class="h4 fw-bold mb-1 text-break">
+                        Report Diagnostico: <span class="text-primary" th:text="${report.targetUrl}">https://example.com</span>
+                    </h1>
+                    <p class="text-muted small mb-0 d-none d-print-block">
+                        Audit SEO On-Page, Mobile Readiness, Tracking SEM e Conversion Rate Optimization.
+                    </p>
+                </div>
+                <div class="col-lg-4 text-lg-end mt-2 mt-lg-0 no-print">
+                    <a th:href="@{'/api/report/' + ${report.id}}" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
+                        <i class="bi bi-file-code me-1"></i> Esporta JSON
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Score Overview (3 Cards with Gauges) -->
+        <div class="row g-2 g-md-3 mb-3 score-gauges">
+            
+            <!-- Global Score -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-3 text-center bg-white h-100">
+                    <span class="text-muted small text-uppercase fw-bold mb-1">Punteggio Complessivo</span>
+                    <div style="position: relative; height: 140px;" class="gauge-placeholder d-flex align-items-center justify-content-center">
+                        <canvas id="overallChart"></canvas>
+                        <div class="position-absolute fs-1 fw-bold text-dark score-number" th:text="${report.overallScore}">85</div>
+                    </div>
+                    <div class="mt-1 text-muted small">Media pesata (55% SEO, 45% SEM)</div>
+                </div>
+            </div>
+
+            <!-- SEO Score -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-3 text-center bg-white h-100">
+                    <span class="text-muted small text-uppercase fw-bold mb-1">Punteggio SEO On-Page</span>
+                    <div style="position: relative; height: 140px;" class="gauge-placeholder d-flex align-items-center justify-content-center">
+                        <canvas id="seoChart"></canvas>
+                        <div class="position-absolute fs-1 fw-bold text-primary score-number" th:text="${report.seoScore}">80</div>
+                    </div>
+                    <div class="mt-1 text-muted small">Meta tag, headings, velocità, link</div>
+                </div>
+            </div>
+
+            <!-- SEM Score -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 p-3 text-center bg-white h-100">
+                    <span class="text-muted small text-uppercase fw-bold mb-1">Punteggio SEM & Conversioni</span>
+                    <div style="position: relative; height: 140px;" class="gauge-placeholder d-flex align-items-center justify-content-center">
+                        <canvas id="semChart"></canvas>
+                        <div class="position-absolute fs-1 fw-bold text-success score-number" th:text="${report.semScore}">90</div>
+                    </div>
+                    <div class="mt-1 text-muted small">Pixel (GA4/GTM/Meta) e lead-gen (CRO)</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Navigation Tabs (Nascoste in stampa) -->
+        <ul class="nav nav-pills nav-fill bg-white p-2 rounded-4 shadow-sm mb-3 no-print" id="reportTabs" role="tablist">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active rounded-pill fw-semibold" id="recommendations-tab" data-bs-toggle="tab" 
+                        data-bs-target="#recommendations" type="button" role="tab">
+                    <i class="bi bi-lightbulb-fill text-warning me-1"></i> Migliorie Consigliate 
+                    <span class="badge bg-danger rounded-pill ms-1" th:text="${#lists.size(report.recommendations)}">0</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill fw-semibold" id="issues-tab" data-bs-toggle="tab" 
+                        data-bs-target="#issues" type="button" role="tab">
+                    <i class="bi bi-clipboard2-check text-primary me-1"></i> Diagnostica & Check 
+                    <span class="badge bg-secondary rounded-pill ms-1" th:text="${#lists.size(report.issues)}">0</span>
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill fw-semibold" id="seo-tab" data-bs-toggle="tab" 
+                        data-bs-target="#seo" type="button" role="tab">
+                    <i class="bi bi-search text-info me-1"></i> Dettagli SEO
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link rounded-pill fw-semibold" id="sem-tab" data-bs-toggle="tab" 
+                        data-bs-target="#sem" type="button" role="tab">
+                    <i class="bi bi-megaphone text-success me-1"></i> Dettagli SEM & Ads
+                </button>
+            </li>
+            <!-- Log Tab: Marcato come no-print per escluderlo dalla stampa cartacea -->
+            <li class="nav-item no-print" role="presentation">
+                <button class="nav-link rounded-pill fw-semibold" id="logs-tab" data-bs-toggle="tab" 
+                        data-bs-target="#logs" type="button" role="tab">
+                    <i class="bi bi-clock-history text-secondary me-1"></i> Log Scansione
+                </button>
+            </li>
+        </ul>
+
+        <!-- Tab Contents -->
+        <div class="tab-content" id="reportTabsContent">
+
+            <!-- TAB 1: Migliorie Consigliate (Actionable Recommendations) -->
+            <div class="tab-pane fade show active" id="recommendations" role="tabpanel">
+                <div class="card border-0 shadow-sm rounded-4 p-3 p-md-4 bg-white mb-3">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div>
+                            <h4 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                                <i class="bi bi-rocket-takeoff text-primary"></i>
+                                Piano delle Migliorie Consigliate (Action Plan)
+                            </h4>
+                            <p class="text-muted small mb-0 d-none d-md-block">
+                                Azioni pratiche con impatto e codice pronto per incrementare posizionamento e conversioni.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div th:if="${#lists.isEmpty(report.recommendations)}" class="alert alert-success rounded-4 text-center p-3">
+                        <i class="bi bi-trophy-fill fs-4 text-warning"></i>
+                        <h6 class="fw-bold mt-1 mb-0">Nessuna criticità rilevata!</h6>
+                    </div>
+
+                    <!-- Lista Raccomandazioni (Compatta in Stampa) -->
+                    <div class="recommendations-container d-flex flex-column gap-2" th:unless="${#lists.isEmpty(report.recommendations)}">
+                        <div th:each="rec : ${report.recommendations}" class="card border rounded-3 p-3 shadow-sm bg-white recommendation-card">
+                            <div class="d-flex flex-wrap justify-content-between align-items-center gap-1 mb-1">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span th:if="${rec.priority.name() == 'ALTA'}" class="badge bg-danger px-2 py-1 rounded-pill small">
+                                        <i class="bi bi-exclamation-triangle-fill me-1"></i> PRIORITÀ ALTA
+                                    </span>
+                                    <span th:if="${rec.priority.name() == 'MEDIA'}" class="badge bg-warning text-dark px-2 py-1 rounded-pill small">
+                                        <i class="bi bi-exclamation-circle-fill me-1"></i> PRIORITÀ MEDIA
+                                    </span>
+                                    <span th:if="${rec.priority.name() == 'BASSA'}" class="badge bg-info text-dark px-2 py-1 rounded-pill small">
+                                        <i class="bi bi-info-circle-fill me-1"></i> PRIORITÀ BASSA
+                                    </span>
+                                    <span class="badge bg-light text-secondary border small" th:text="${rec.category}">SEO</span>
+                                </div>
+                                <span class="small text-muted font-monospace" th:text="${rec.id}">REC-01</span>
+                            </div>
+
+                            <h5 class="fw-bold text-dark mb-1" th:text="${rec.title}">Titolo Miglioria</h5>
+                            
+                            <div class="p-2 bg-light rounded-2 mb-2 border">
+                                <div class="mb-1 text-dark small">
+                                    <strong class="text-secondary small text-uppercase">Impatto:</strong>
+                                    <span th:text="${rec.impactExplanation}">Spiegazione impatto</span>
+                                </div>
+                                <div class="mb-0 text-dark small">
+                                    <strong class="text-primary small text-uppercase">Azione:</strong>
+                                    <span th:text="${rec.suggestedFix}">Azione correttiva</span>
+                                </div>
+                            </div>
+
+                            <!-- Code Snippet -->
+                            <div th:if="${rec.codeSnippet != null and !rec.codeSnippet.isBlank()}">
+                                <div class="d-flex justify-content-between align-items-center mb-1 no-print">
+                                    <span class="text-muted small fw-bold"><i class="bi bi-code-slash me-1"></i>Codice consigliato:</span>
+                                    <button class="btn btn-sm btn-outline-secondary copy-btn py-0 px-2" 
+                                            th:data-snippet="${rec.codeSnippet}">
+                                        <i class="bi bi-clipboard"></i> Copia Codice
+                                    </button>
+                                </div>
+                                <pre class="code-box mb-0"><code th:text="${rec.codeSnippet}"></code></pre>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 2: Diagnostica & Check (Audit Issues) -->
+            <div class="tab-pane fade" id="issues" role="tabpanel">
+                <div class="card border-0 shadow-sm rounded-4 p-3 p-md-4 bg-white mb-3">
+                    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+                        <div>
+                            <h4 class="fw-bold mb-0">Diagnostica Elementi Analizzati</h4>
+                            <span class="text-muted small d-none d-md-inline">Riepilogo puntuale delle verifiche effettuate con stato di severità.</span>
+                        </div>
+                        <!-- Filtri a video -->
+                        <div class="btn-group btn-group-sm rounded-pill shadow-sm no-print" role="group">
+                            <button type="button" class="btn btn-outline-dark active filter-btn" data-filter="all">Tutti</button>
+                            <button type="button" class="btn btn-outline-danger filter-btn" data-filter="CRITICAL">Critici</button>
+                            <button type="button" class="btn btn-outline-warning filter-btn" data-filter="WARNING">Avvisi</button>
+                            <button type="button" class="btn btn-outline-success filter-btn" data-filter="GOOD">Superati</button>
+                        </div>
+                    </div>
+
+                    <div class="row g-2 issues-container">
+                        <div th:each="issue : ${report.issues}" class="col-12 col-md-6 issue-card" th:data-severity="${issue.severity.name()}">
+                            <div class="p-2 p-md-3 rounded-3 border d-flex align-items-start gap-2 bg-white h-100"
+                                 th:classappend="${issue.severity.name() == 'CRITICAL' ? 'border-danger-subtle bg-danger-subtle bg-opacity-10' : 
+                                                  (issue.severity.name() == 'WARNING' ? 'border-warning-subtle bg-warning-subtle bg-opacity-10' : 'border-success-subtle bg-success-subtle bg-opacity-10')}">
+                                
+                                <div class="fs-5 mt-0">
+                                    <i th:if="${issue.severity.name() == 'CRITICAL'}" class="bi bi-x-circle-fill text-danger"></i>
+                                    <i th:if="${issue.severity.name() == 'WARNING'}" class="bi bi-exclamation-triangle-fill text-warning"></i>
+                                    <i th:if="${issue.severity.name() == 'GOOD'}" class="bi bi-check-circle-fill text-success"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <div class="d-flex align-items-center gap-1 mb-0">
+                                        <span class="badge bg-secondary-subtle text-dark border small" style="font-size: 0.72rem;" th:text="${issue.category}">SEO</span>
+                                        <h6 class="fw-bold mb-0 text-dark small" th:text="${issue.title}">Titolo Issue</h6>
+                                    </div>
+                                    <p class="text-secondary small mb-0" style="font-size: 0.78rem;" th:text="${issue.details}">Dettaglio issue</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 3: Dettagli SEO -->
+            <div class="tab-pane fade" id="seo" role="tabpanel">
+                <div class="row g-2 g-md-3">
+                    
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                            <h5 class="fw-bold mb-2 d-flex align-items-center gap-2">
+                                <i class="bi bi-tags text-primary"></i> Meta Tag & Contenuti
+                            </h5>
+                            <div class="d-flex flex-column gap-2 small">
+                                <div>
+                                    <strong class="text-secondary">Tag Title:</strong>
+                                    <span class="text-dark fw-bold" th:text="${seo.title != null and !seo.title.isEmpty() ? seo.title : 'Non impostato'}">Title</span>
+                                    <span class="badge bg-light text-muted border ms-1" th:text="${seo.titleLength} + ' car.'">0 car.</span>
+                                </div>
+                                <div>
+                                    <strong class="text-secondary">Meta Description:</strong>
+                                    <span class="text-dark" th:text="${seo.metaDescription != null and !seo.metaDescription.isEmpty() ? seo.metaDescription : 'Non impostata'}">Desc</span>
+                                    <span class="badge bg-light text-muted border ms-1" th:text="${seo.metaDescriptionLength} + ' car.'">0 car.</span>
+                                </div>
+                                <div>
+                                    <strong class="text-secondary">Canonical:</strong>
+                                    <span class="text-dark font-monospace" th:text="${seo.canonicalUrl != null and !seo.canonicalUrl.isEmpty() ? seo.canonicalUrl : 'Assente'}">-</span>
+                                </div>
+                                <div>
+                                    <strong class="text-secondary">Meta Robots:</strong>
+                                    <span class="text-dark font-monospace" th:text="${seo.robotsMeta != null and !seo.robotsMeta.isEmpty() ? seo.robotsMeta : 'Nessuna restrizione (Index, Follow)'}">-</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                            <h5 class="fw-bold mb-2 d-flex align-items-center gap-2">
+                                <i class="bi bi-diagram-3 text-info"></i> Struttura e Headings
+                            </h5>
+                            <div class="row text-center mb-2 g-2">
+                                <div class="col-4">
+                                    <div class="p-2 bg-light rounded-2 border">
+                                        <div class="fs-5 fw-bold text-primary" th:text="${seo.h1Count}">1</div>
+                                        <div class="small text-muted" style="font-size: 0.72rem;">Tag H1</div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="p-2 bg-light rounded-2 border">
+                                        <div class="fs-5 fw-bold text-dark" th:text="${seo.h2Count}">4</div>
+                                        <div class="small text-muted" style="font-size: 0.72rem;">Tag H2</div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="p-2 bg-light rounded-2 border">
+                                        <div class="fs-5 fw-bold text-dark" th:text="${seo.h3Count}">6</div>
+                                        <div class="small text-muted" style="font-size: 0.72rem;">Tag H3</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div th:if="${!#lists.isEmpty(seo.h1Tags)}" class="small">
+                                <strong class="text-secondary d-block">H1 rilevato:</strong>
+                                <span class="text-dark fw-medium" th:text="${seo.h1Tags[0]}"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                            <h5 class="fw-bold mb-2 d-flex align-items-center gap-2">
+                                <i class="bi bi-link-45deg text-success"></i> Link & Immagini
+                            </h5>
+                            <div class="row text-center mb-2 g-2 small">
+                                <div class="col-4">
+                                    <div class="p-2 bg-light rounded-2 border">
+                                        <div class="fs-6 fw-bold text-dark" th:text="${seo.totalInternalLinks}">0</div>
+                                        <div class="text-muted" style="font-size: 0.72rem;">Interni</div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="p-2 bg-light rounded-2 border">
+                                        <div class="fs-6 fw-bold text-dark" th:text="${seo.totalExternalLinks}">0</div>
+                                        <div class="text-muted" style="font-size: 0.72rem;">Esterni</div>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="p-2 bg-light rounded-2 border">
+                                        <div class="fs-6 fw-bold text-danger" th:text="${seo.imagesMissingAlt}">0</div>
+                                        <div class="text-muted" style="font-size: 0.72rem;">No Alt</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="small text-muted">
+                                Totale immagini: <strong class="text-dark" th:text="${seo.totalImages}">0</strong> &bull; Link nofollow: <strong class="text-dark" th:text="${seo.nofollowLinks}">0</strong>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                            <h5 class="fw-bold mb-2 d-flex align-items-center gap-2">
+                                <i class="bi bi-key text-warning"></i> Parole Chiave Frequenti
+                            </h5>
+                            <div class="d-flex flex-wrap gap-1">
+                                <span th:each="kw : ${seo.topKeywords}" class="badge bg-primary-subtle text-primary border px-2 py-1 rounded-pill small" style="font-size: 0.75rem;">
+                                    <span th:text="${kw.key}">parola</span> 
+                                    <span class="badge bg-primary text-white rounded-circle ms-1" th:text="${kw.value}">3</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 4: Dettagli SEM & Ads -->
+            <div class="tab-pane fade" id="sem" role="tabpanel">
+                <div class="row g-2 g-md-3">
+                    
+                    <!-- Tracking & Pixels -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                            <h5 class="fw-bold mb-2 d-flex align-items-center gap-2">
+                                <i class="bi bi-radar text-primary"></i> Pixel Pubblicitari & Web Analytics
+                            </h5>
+                            <ul class="list-group list-group-flush small">
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
+                                    <span>Google Tag Manager (GTM)</span>
+                                    <span th:if="${sem.googleTagManagerFound}" class="badge bg-success-subtle text-success border border-success"><i class="bi bi-check-lg"></i> Attivo</span>
+                                    <span th:unless="${sem.googleTagManagerFound}" class="badge bg-light text-muted border">Non trovato</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
+                                    <span>Google Analytics 4 (GA4)</span>
+                                    <span th:if="${sem.googleAnalytics4Found}" class="badge bg-success-subtle text-success border border-success"><i class="bi bi-check-lg"></i> Attivo</span>
+                                    <span th:unless="${sem.googleAnalytics4Found}" class="badge bg-light text-muted border">Non trovato</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
+                                    <span>Meta Pixel (Facebook Ads)</span>
+                                    <span th:if="${sem.metaPixelFound}" class="badge bg-success-subtle text-success border border-success"><i class="bi bi-check-lg"></i> Attivo</span>
+                                    <span th:unless="${sem.metaPixelFound}" class="badge bg-light text-muted border">Non trovato</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-center px-0 py-1">
+                                    <span>Google Ads Conversion Tag</span>
+                                    <span th:if="${sem.googleAdsConversionFound}" class="badge bg-success-subtle text-success border border-success"><i class="bi bi-check-lg"></i> Attivo</span>
+                                    <span th:unless="${sem.googleAdsConversionFound}" class="badge bg-light text-muted border">Non trovato</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Canali di Conversione -->
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white h-100">
+                            <h5 class="fw-bold mb-2 d-flex align-items-center gap-2">
+                                <i class="bi bi-bullseye text-success"></i> Elementi di Conversione (CRO)
+                            </h5>
+                            <div class="row text-center g-2 mb-2">
+                                <div class="col-6">
+                                    <div class="p-2 bg-light rounded-2 border">
+                                        <div class="fs-6 fw-bold text-dark" th:text="${sem.formCount}">0</div>
+                                        <div class="small text-muted" style="font-size: 0.72rem;">Form Contatto</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-2 bg-light rounded-2 border">
+                                        <div class="fs-6 fw-bold text-dark" th:text="${sem.phoneLinksCount}">0</div>
+                                        <div class="small text-muted" style="font-size: 0.72rem;">Click-to-Call</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-2 bg-light rounded-2 border">
+                                        <div class="fs-6 fw-bold text-success" th:text="${sem.whatsAppLinksCount}">0</div>
+                                        <div class="small text-muted" style="font-size: 0.72rem;">WhatsApp</div>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="p-2 bg-light rounded-2 border">
+                                        <div class="fs-6 fw-bold text-primary" th:text="${sem.ctaButtonsCount}">0</div>
+                                        <div class="small text-muted" style="font-size: 0.72rem;">Pulsanti CTA</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Google Ads SERP Simulator -->
+                    <div class="col-12">
+                        <div class="card border-0 shadow-sm rounded-4 p-3 bg-white">
+                            <h5 class="fw-bold mb-1 d-flex align-items-center gap-2">
+                                <i class="bi bi-google text-danger"></i> Simulatore Annuncio Google Ads (SERP Preview)
+                            </h5>
+                            <div class="serp-card mt-2" style="max-width: 600px;">
+                                <div class="d-flex align-items-center gap-2 mb-1">
+                                    <span class="serp-sponsored">Sponsorizzato</span>
+                                    <span class="text-muted">&bull;</span>
+                                    <span class="serp-url text-truncate" th:text="${sem.displayUrl}">example.com</span>
+                                </div>
+                                <div>
+                                    <a href="#" class="serp-title" onclick="return false;">
+                                        <span th:text="${sem.adHeadline1}">Titolo Annuncio</span> | 
+                                        <span th:text="${sem.adHeadline2}">Call To Action</span>
+                                    </a>
+                                </div>
+                                <div class="serp-desc" th:text="${sem.adDescription}">
+                                    Descrizione dell'annuncio basata sui metadati estratti dalla pagina.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 5: Log di Scansione (ESCLUSO DALLA STAMPA TRAMITE CLASSE no-print) -->
+            <div class="tab-pane fade no-print" id="logs" role="tabpanel">
+                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold mb-0 d-flex align-items-center gap-2">
+                            <i class="bi bi-terminal text-dark"></i> Registro Eventi dell'Audit (Consultazione a video)
+                        </h5>
+                        <span class="badge bg-secondary-subtle text-dark border small">Solo a video &bull; Escluso da Stampa</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle small mb-0 font-monospace">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Orario</th>
+                                    <th>Fase</th>
+                                    <th>Livello</th>
+                                    <th>Messaggio</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr th:each="log : ${report.logs}">
+                                    <td class="text-muted" th:text="${log.timestamp}">12:00:00</td>
+                                    <td><span class="badge bg-secondary-subtle text-dark border" th:text="${log.phase}">FASE</span></td>
+                                    <td>
+                                        <span th:if="${log.level == 'INFO'}" class="badge bg-primary">INFO</span>
+                                        <span th:if="${log.level == 'SUCCESS'}" class="badge bg-success">SUCCESS</span>
+                                        <span th:if="${log.level == 'WARNING'}" class="badge bg-warning text-dark">WARNING</span>
+                                        <span th:if="${log.level == 'ERROR'}" class="badge bg-danger">ERROR</span>
+                                    </td>
+                                    <td th:text="${log.message}">Messaggio di log</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Footer (Escluso dalla stampa) -->
+    <footer class="bg-white border-top py-3 mt-auto no-print">
+        <div class="container text-center text-muted small">
+            &copy; 2026 SEO & SEM Analyzer &bull; Spring Boot 3 &bull; Thymeleaf &bull; Persistenza H2
+        </div>
+    </footer>
+
+    <!-- Bootstrap Bundle JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script per Grafici Gauge e Interazioni -->
+    <script th:inline="javascript">
+        const overallScore = /*[[${report.overallScore}]]*/ 85;
+        const seoScore = /*[[${report.seoScore}]]*/ 80;
+        const semScore = /*[[${report.semScore}]]*/ 90;
+
+        function createGauge(canvasId, score, color) {
+            const ctx = document.getElementById(canvasId).getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    datasets: [{
+                        data: [score, 100 - score],
+                        backgroundColor: [color, '#e9ecef'],
+                        borderWidth: 0,
+                        circumference: 240,
+                        rotation: 240
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '76%',
+                    plugins: {
+                        tooltip: { enabled: false }
+                    }
+                }
+            });
+        }
+
+        createGauge('overallChart', overallScore, '#198754');
+        createGauge('seoChart', seoScore, '#0d6efd');
+        createGauge('semChart', semScore, '#198754');
+
+        // Filtro issue
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                const filter = btn.getAttribute('data-filter');
+                document.querySelectorAll('.issue-card').forEach(card => {
+                    if (filter === 'all' || card.getAttribute('data-severity') === filter) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        });
+
+        // Copia Snippet
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const code = btn.getAttribute('data-snippet');
+                navigator.clipboard.writeText(code).then(() => {
+                    const originalText = btn.innerHTML;
+                    btn.innerHTML = '<i class="bi bi-check2"></i> Copiato!';
+                    btn.classList.remove('btn-outline-secondary');
+                    btn.classList.add('btn-success');
+                    setTimeout(() => {
+                        btn.innerHTML = originalText;
+                        btn.classList.remove('btn-success');
+                        btn.classList.add('btn-outline-secondary');
+                    }, 2000);
+                });
+            });
+        });
+    </script>
+</body>
+</html>

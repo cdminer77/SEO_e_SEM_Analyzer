@@ -1,0 +1,33 @@
+/* Custom Styles for SEO & SEM Analyzer */
+body {
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background-color: #f8fafc;
+    color: #1e293b;
+}
+
+.card {
+    transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.nav-pills .nav-link {
+    color: #475569;
+    border-radius: 9999px;
+    padding: 0.6rem 1.25rem;
+    transition: all 0.2s ease;
+}
+
+.nav-pills .nav-link.active {
+    background-color: #0d6efd;
+    color: #ffffff;
+    box-shadow: 0 4px 6px -1px rgba(13, 110, 253, 0.25);
+}
+
+.font-monospace {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace !important;
+}
+
+pre.code-box {
+    border: 1px solid #334155;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
