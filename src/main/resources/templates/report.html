@@ -873,6 +873,19 @@
             }
         }
 
+        // Se l'immagine è un avviso/placeholder microscopico o corrotto
+        document.addEventListener('DOMContentLoaded', () => {
+            const img = document.querySelector('.browser-body img');
+            if (img) {
+                img.addEventListener('load', () => {
+                    // Se l'immagine caricata è troppo piccola o vuota
+                    if (img.naturalWidth > 0 && img.naturalWidth < 100) {
+                        handleScreenshotError(img);
+                    }
+                });
+            }
+        });
+
         // Filtro issue
         document.querySelectorAll('.filter-btn').forEach(btn => {
             btn.addEventListener('click', () => {

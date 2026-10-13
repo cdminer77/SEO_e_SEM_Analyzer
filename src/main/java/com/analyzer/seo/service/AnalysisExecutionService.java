@@ -53,7 +53,11 @@ public class AnalysisExecutionService {
             report.setTargetUrl(crawl.normalizedUrl());
 
             try {
-                report.setScreenshotUrl("https://image.thum.io/get/width/800/crop/600/" + crawl.normalizedUrl());
+                java.net.URI uri = java.net.URI.create(crawl.normalizedUrl());
+                String domain = uri.getHost();
+                if (domain != null && !domain.isBlank()) {
+                    report.setScreenshotUrl("https://linkdr.com/api/screenshot/" + domain);
+                }
             } catch (Exception ignored) {}
 
             jobManagerService.emitLog(jobId, "NETWORK", 
