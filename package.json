@@ -1,0 +1,21 @@
+{
+  "name": "seo-sem-analyzer",
+  "version": "1.0.0",
+  "description": "Applicazione web professionale per l'analisi e la diagnostica di siti web sotto l'aspetto **SEO** e **SEM**, con monitoraggio grafico dei log in tempo reale, report diagnostico compatto per la stampa e archiviazione permanente su database locale.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cdminer77/SEO_e_SEM_Analyzer.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/cdminer77/SEO_e_SEM_Analyzer/issues"
+  },
+  "homepage": "https://github.com/cdminer77/SEO_e_SEM_Analyzer#readme"
+}

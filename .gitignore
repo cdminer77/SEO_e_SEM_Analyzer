@@ -39,6 +39,9 @@ replay_pid*
 Thumbs.db
 Desktop.ini
 
+# Node modules
+node_modules/
+
 # Maven wrapper
 !.mvn/wrapper/maven-wrapper.jar
 !mvnw

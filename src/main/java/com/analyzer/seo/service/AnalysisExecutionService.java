@@ -20,17 +20,20 @@ public class AnalysisExecutionService {
     private final SemAuditService semAuditService;
     private final RecommendationEngine recommendationEngine;
     private final JobManagerService jobManagerService;
+    private final LocalScreenshotService localScreenshotService;
 
     public AnalysisExecutionService(CrawlerService crawlerService,
                                     SeoAuditService seoAuditService,
                                     SemAuditService semAuditService,
                                     RecommendationEngine recommendationEngine,
-                                    JobManagerService jobManagerService) {
+                                    JobManagerService jobManagerService,
+                                    LocalScreenshotService localScreenshotService) {
         this.crawlerService = crawlerService;
         this.seoAuditService = seoAuditService;
         this.semAuditService = semAuditService;
         this.recommendationEngine = recommendationEngine;
         this.jobManagerService = jobManagerService;
+        this.localScreenshotService = localScreenshotService;
     }
 
     @Async("analysisTaskExecutor")
@@ -52,10 +55,17 @@ public class AnalysisExecutionService {
             CrawlerService.CrawlResult crawl = crawlerService.crawl(rawUrl);
             report.setTargetUrl(crawl.normalizedUrl());
 
+            // Generazione Screenshot Nativo (Locale)
             try {
-                java.net.URI uri = java.net.URI.create(crawl.normalizedUrl());
-                String domain = uri.getHost();
-                if (domain != null && !domain.isBlank()) {
+                jobManagerService.emitLog(jobId, "SCREENSHOT", "Generazione screenshot nativo in alta definizione con browser locale...", "INFO", 30);
+                String localUrl = localScreenshotService.captureScreenshot(jobId, crawl.normalizedUrl());
+                if (localUrl != null) {
+                    report.setScreenshotUrl(localUrl);
+                    jobManagerService.emitLog(jobId, "SCREENSHOT", "Screenshot acquisito con successo!", "SUCCESS", 33);
+                } else {
+                    // Fallback secondario: LinkDR o WordPress mshots
+                    java.net.URI uri = java.net.URI.create(crawl.normalizedUrl());
+                    String domain = uri.getHost();
                     report.setScreenshotUrl("https://linkdr.com/api/screenshot/" + domain);
                 }
             } catch (Exception ignored) {}
