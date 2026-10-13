@@ -158,7 +158,9 @@
                                 <tr th:each="item : ${history}">
                                     <td>
                                         <div class="d-flex align-items-center gap-2">
-                                            <i class="bi bi-globe text-primary"></i>
+                                            <img th:if="${item.screenshotUrl != null}" th:src="${item.screenshotUrl}" alt="Preview" 
+                                                 class="rounded border shadow-sm flex-shrink-0" style="width: 44px; height: 30px; object-fit: cover;" 
+                                                 onerror="this.style.display='none';">
                                             <span class="fw-bold text-dark text-break" th:text="${item.targetUrl}">https://example.com</span>
                                         </div>
                                     </td>

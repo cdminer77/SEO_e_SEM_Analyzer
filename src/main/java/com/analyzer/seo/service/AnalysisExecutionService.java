@@ -6,7 +6,10 @@ import com.analyzer.seo.model.RecommendationItem;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -48,6 +51,11 @@ public class AnalysisExecutionService {
             jobManagerService.emitLog(jobId, "CRAWLING", "Scaricamento pagina con User-Agent Googlebot...", "INFO", 25);
             CrawlerService.CrawlResult crawl = crawlerService.crawl(rawUrl);
             report.setTargetUrl(crawl.normalizedUrl());
+
+            try {
+                String encodedUrl = URLEncoder.encode(crawl.normalizedUrl(), StandardCharsets.UTF_8);
+                report.setScreenshotUrl("https://s.wordpress.com/mshots/v1/" + encodedUrl + "?w=800&h=600");
+            } catch (Exception ignored) {}
 
             jobManagerService.emitLog(jobId, "NETWORK", 
                     "Risposta HTTP " + crawl.statusCode() + " ricevuta in " + crawl.responseTimeMs() + "ms. SSL: " + (crawl.isHttps() ? "OK" : "NO"),
@@ -94,11 +102,21 @@ public class AnalysisExecutionService {
             List<AuditIssue> allIssues = new ArrayList<>();
             allIssues.addAll(seoResult.issues());
             allIssues.addAll(semResult.issues());
+            allIssues.sort(Comparator.comparingInt(issue -> {
+                if (issue.getSeverity() == AuditIssue.Severity.CRITICAL) return 1;
+                if (issue.getSeverity() == AuditIssue.Severity.WARNING) return 2;
+                return 3;
+            }));
             report.setIssues(allIssues);
 
             List<RecommendationItem> recommendations = recommendationEngine.generateRecommendations(
                     seoResult.metrics(), semResult.metrics(), crawl.normalizedUrl()
             );
+            recommendations.sort(Comparator.comparingInt(rec -> {
+                if (rec.getPriority() == RecommendationItem.Priority.ALTA) return 1;
+                if (rec.getPriority() == RecommendationItem.Priority.MEDIA) return 2;
+                return 3;
+            }));
             report.setRecommendations(recommendations);
 
             int overall = (int) Math.round((seoResult.metrics().getScore() * 0.55) + (semResult.metrics().getScore() * 0.45));

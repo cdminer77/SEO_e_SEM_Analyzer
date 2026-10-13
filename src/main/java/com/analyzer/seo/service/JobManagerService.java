@@ -54,6 +54,7 @@ public class JobManagerService {
                 fallback.setOverallScore(entityOpt.get().getOverallScore());
                 fallback.setSeoScore(entityOpt.get().getSeoScore());
                 fallback.setSemScore(entityOpt.get().getSemScore());
+                fallback.setScreenshotUrl(entityOpt.get().getScreenshotUrl());
                 return fallback;
             }
         }
@@ -170,6 +171,7 @@ public class JobManagerService {
                     report.getOverallScore(),
                     report.getSeoScore(),
                     report.getSemScore(),
+                    report.getScreenshotUrl(),
                     json
             );
             auditReportRepository.save(entity);

@@ -24,6 +24,9 @@ public class AuditReportEntity {
     private int seoScore;
     private int semScore;
 
+    @Column(length = 2048)
+    private String screenshotUrl;
+
     @Lob
     @Column(columnDefinition = "CLOB")
     private String reportJson;
@@ -36,7 +39,7 @@ public class AuditReportEntity {
     }
 
     public AuditReportEntity(String id, String targetUrl, String analyzedAt, String status, 
-                             int overallScore, int seoScore, int semScore, String reportJson) {
+                             int overallScore, int seoScore, int semScore, String screenshotUrl, String reportJson) {
         this.id = id;
         this.targetUrl = targetUrl;
         this.analyzedAt = analyzedAt;
@@ -44,6 +47,7 @@ public class AuditReportEntity {
         this.overallScore = overallScore;
         this.seoScore = seoScore;
         this.semScore = semScore;
+        this.screenshotUrl = screenshotUrl;
         this.reportJson = reportJson;
         this.createdAt = LocalDateTime.now();
     }
@@ -69,6 +73,9 @@ public class AuditReportEntity {
 
     public int getSemScore() { return semScore; }
     public void setSemScore(int semScore) { this.semScore = semScore; }
+
+    public String getScreenshotUrl() { return screenshotUrl; }
+    public void setScreenshotUrl(String screenshotUrl) { this.screenshotUrl = screenshotUrl; }
 
     public String getReportJson() { return reportJson; }
     public void setReportJson(String reportJson) { this.reportJson = reportJson; }

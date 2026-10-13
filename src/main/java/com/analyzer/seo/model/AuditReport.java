@@ -16,6 +16,7 @@ public class AuditReport {
 
     private SeoMetrics seoMetrics;
     private SemMetrics semMetrics;
+    private String screenshotUrl;
     private List<AuditIssue> issues = new ArrayList<>();
     private List<RecommendationItem> recommendations = new ArrayList<>();
     private List<LogEvent> logs = new ArrayList<>();
@@ -57,6 +58,9 @@ public class AuditReport {
 
     public SemMetrics getSemMetrics() { return semMetrics; }
     public void setSemMetrics(SemMetrics semMetrics) { this.semMetrics = semMetrics; }
+
+    public String getScreenshotUrl() { return screenshotUrl; }
+    public void setScreenshotUrl(String screenshotUrl) { this.screenshotUrl = screenshotUrl; }
 
     public List<AuditIssue> getIssues() { return issues; }
     public void setIssues(List<AuditIssue> issues) { this.issues = issues; }
