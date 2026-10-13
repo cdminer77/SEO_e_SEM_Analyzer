@@ -87,8 +87,19 @@
                 border-radius: 6px !important;
                 padding: 6px 10px !important;
                 margin-bottom: 6px !important;
-                page-break-inside: avoid !important;
-                break-inside: avoid !important;
+            }
+
+            /* I contenitori ampi devono permettere il flusso naturale delle pagine senza sovrapporsi */
+            .tab-pane,
+            .tab-pane > .card,
+            .priority-column,
+            .priority-column > .card,
+            .tab-content,
+            .tab-content > .tab-pane {
+                page-break-inside: auto !important;
+                break-inside: auto !important;
+                page-break-before: auto !important;
+                break-before: auto !important;
             }
 
             /* Header Report Compatto */
@@ -96,6 +107,8 @@
                 padding: 8px 12px !important;
                 margin-bottom: 8px !important;
                 border-bottom: 2px solid #0d6efd !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
             }
 
             .report-header-card h1 {
@@ -111,6 +124,25 @@
                 break-inside: avoid !important;
             }
 
+            .showcase-card .row {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                gap: 12px !important;
+            }
+
+            .showcase-card .col-lg-7 {
+                width: 58% !important;
+                max-width: 58% !important;
+                flex: 0 0 58% !important;
+            }
+
+            .showcase-card .col-lg-5 {
+                width: 42% !important;
+                max-width: 42% !important;
+                flex: 0 0 42% !important;
+            }
+
             .browser-window {
                 border: 1px solid #cbd5e1 !important;
                 border-radius: 6px !important;
@@ -118,13 +150,13 @@
             }
 
             .browser-body {
-                min-height: 380px !important;
-                max-height: 440px !important;
+                min-height: 340px !important;
+                max-height: 380px !important;
             }
 
             .browser-body img {
-                min-height: 380px !important;
-                max-height: 440px !important;
+                min-height: 340px !important;
+                max-height: 380px !important;
                 object-fit: cover !important;
                 object-position: top !important;
             }
@@ -132,11 +164,32 @@
             .showcase-card .card {
                 padding: 6px 10px !important;
                 margin-bottom: 4px !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
             }
 
             .showcase-card .score-card-item {
-                padding: 6px 8px !important;
+                padding: 4px 4px !important;
                 margin-bottom: 0 !important;
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
+            }
+
+            .showcase-card .score-card-item .small {
+                font-size: 0.62rem !important;
+            }
+
+            .showcase-card .score-card-item .fs-5 {
+                font-size: 0.85rem !important;
+            }
+
+            .showcase-card .score-card-item .text-muted {
+                font-size: 0.58rem !important;
+            }
+
+            .showcase-card .score-card-item .gauge-wrapper {
+                width: 36px !important;
+                height: 36px !important;
             }
 
             .score-chart-container {
@@ -144,10 +197,13 @@
                 height: 95px !important;
             }
 
-            /* Separazione netta: Pagina 1 per Showcase, Pagina 2 per Migliorie e Diagnostica */
-            #recommendations {
-                page-break-before: always !important;
-                break-before: page !important;
+            /* Solo le card singole foglia evitano lo spezzamento */
+            .recommendation-card,
+            .issue-card,
+            .legend-card,
+            .disclaimer-card {
+                page-break-inside: avoid !important;
+                break-inside: avoid !important;
             }
 
             /* Priority group headers in stampa */
@@ -448,7 +504,7 @@
                                             Complessivo
                                         </div>
                                         <!-- Mini Doughnut Gauge Circolare -->
-                                        <div class="mx-auto my-1" style="width: 44px; height: 44px; position: relative;">
+                                        <div class="mx-auto my-1 gauge-wrapper" style="width: 44px; height: 44px; position: relative;">
                                             <canvas id="gaugeOverall"></canvas>
                                         </div>
                                         <div class="fs-5 fw-bold text-dark lh-1 my-1" th:text="${report.overallScore} + '/100'">
@@ -469,7 +525,7 @@
                                             SEO On-Page
                                         </div>
                                         <!-- Mini Doughnut Gauge Circolare -->
-                                        <div class="mx-auto my-1" style="width: 44px; height: 44px; position: relative;">
+                                        <div class="mx-auto my-1 gauge-wrapper" style="width: 44px; height: 44px; position: relative;">
                                             <canvas id="gaugeSeo"></canvas>
                                         </div>
                                         <div class="fs-5 fw-bold text-primary lh-1 my-1" th:text="${report.seoScore} + '/100'">
@@ -490,7 +546,7 @@
                                             SEM & Pixel
                                         </div>
                                         <!-- Mini Doughnut Gauge Circolare -->
-                                        <div class="mx-auto my-1" style="width: 44px; height: 44px; position: relative;">
+                                        <div class="mx-auto my-1 gauge-wrapper" style="width: 44px; height: 44px; position: relative;">
                                             <canvas id="gaugeSem"></canvas>
                                         </div>
                                         <div class="fs-5 fw-bold text-success lh-1 my-1" th:text="${report.semScore} + '/100'">
