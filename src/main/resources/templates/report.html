@@ -195,24 +195,39 @@
                 margin-bottom: 4px !important;
             }
 
-            /* Recommendations in stampa: griglia compatta */
+            /* Recommendations in stampa: 3 colonne affiancate in verticale per ciascuna priorità */
+            .priority-columns-row {
+                display: flex !important;
+                flex-direction: row !important;
+                gap: 8px !important;
+                align-items: flex-start !important;
+            }
+
+            .priority-column {
+                flex: 1 1 33.333% !important;
+                max-width: 33.333% !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 4px !important;
+            }
+
             .recommendations-container {
-                display: grid !important;
-                grid-template-columns: 1fr 1fr !important;
-                gap: 6px !important;
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 4px !important;
             }
 
             .recommendation-card {
-                padding: 6px 8px !important;
+                padding: 5px 6px !important;
                 margin-bottom: 0 !important;
-                font-size: 8pt !important;
+                font-size: 7.5pt !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
             }
 
             .recommendation-card h5 {
-                font-size: 9pt !important;
-                margin-bottom: 4px !important;
+                font-size: 8pt !important;
+                margin-bottom: 2px !important;
             }
 
             .recommendation-card .p-3 {
@@ -390,13 +405,13 @@
                     <div class="d-flex flex-column gap-2 h-100 justify-content-between">
                         
                         <!-- Riquadro Grafico a Torta con Percentuali di Punteggio -->
-                        <div class="card border rounded-3 p-2 p-md-3 bg-white shadow-none border-secondary-subtle">
+                        <div class="card border rounded-3 p-2 bg-white shadow-none border-secondary-subtle">
                             <div class="row align-items-center g-2">
-                                <div class="col-5 text-center position-relative score-chart-container" style="height: 110px;">
+                                <div class="col-5 text-center position-relative score-chart-container" style="height: 105px; overflow: hidden; padding: 4px;">
                                     <canvas id="scorePieChart"></canvas>
                                 </div>
-                                <div class="col-7">
-                                    <div class="small fw-bold text-uppercase text-muted mb-1" style="font-size: 0.7rem;">Ripartizione Analisi</div>
+                                <div class="col-7 pe-3">
+                                    <div class="small fw-bold text-uppercase text-muted mb-1" style="font-size: 0.68rem;">Ripartizione Analisi</div>
                                     <div class="d-flex align-items-center justify-content-between mb-1 small">
                                         <span><i class="bi bi-circle-fill text-primary me-1" style="font-size: 0.55rem;"></i>SEO (55%)</span>
                                         <strong class="text-primary" th:text="${report.seoScore} + '%'">80%</strong>
@@ -413,9 +428,9 @@
                             </div>
                         </div>
 
-                        <!-- 1. Punteggio Complessivo -->
-                        <div class="card border rounded-3 p-2 p-md-3 bg-light-subtle shadow-none border-start border-4 border-dark">
-                            <div class="d-flex align-items-center justify-content-between mb-1">
+                        <!-- 1. Punteggio Complessivo (con Mini Grafico Circolare a Ciambella) -->
+                        <div class="card border rounded-3 p-2 px-3 bg-light-subtle shadow-none border-start border-4 border-dark">
+                            <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center gap-2">
                                     <div class="bg-dark text-white p-1 px-2 rounded-2 fs-6">
                                         <i class="bi bi-award-fill"></i>
@@ -425,21 +440,19 @@
                                         <span class="text-muted" style="font-size: 0.7rem;">Media pesata: 55% SEO &bull; 45% SEM</span>
                                     </div>
                                 </div>
-                                <div class="text-end">
+                                <div class="d-flex align-items-center gap-2">
+                                    <!-- Mini Doughnut Canvas -->
+                                    <div style="width: 38px; height: 38px; position: relative;">
+                                        <canvas id="gaugeOverall"></canvas>
+                                    </div>
                                     <span class="fs-4 fw-bold text-dark lh-1" th:text="${report.overallScore} + '/100'">85/100</span>
-                                </div>
-                            </div>
-                            <div class="progress mt-1" style="height: 6px;">
-                                <div class="progress-bar" role="progressbar" 
-                                     th:style="'width: ' + ${report.overallScore} + '%;'"
-                                     th:classappend="${report.overallScore >= 75 ? 'bg-success' : (report.overallScore >= 50 ? 'bg-warning text-dark' : 'bg-danger')}">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 2. Punteggio SEO On-Page -->
-                        <div class="card border rounded-3 p-2 p-md-3 bg-light-subtle shadow-none border-start border-4 border-primary">
-                            <div class="d-flex align-items-center justify-content-between mb-1">
+                        <!-- 2. Punteggio SEO On-Page (con Mini Grafico Circolare a Ciambella) -->
+                        <div class="card border rounded-3 p-2 px-3 bg-light-subtle shadow-none border-start border-4 border-primary">
+                            <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center gap-2">
                                     <div class="bg-primary-subtle text-primary p-1 px-2 rounded-2 fs-6">
                                         <i class="bi bi-search"></i>
@@ -449,20 +462,19 @@
                                         <span class="text-muted" style="font-size: 0.7rem;">Tag, heading, velocità e link</span>
                                     </div>
                                 </div>
-                                <div class="text-end">
+                                <div class="d-flex align-items-center gap-2">
+                                    <!-- Mini Doughnut Canvas -->
+                                    <div style="width: 38px; height: 38px; position: relative;">
+                                        <canvas id="gaugeSeo"></canvas>
+                                    </div>
                                     <span class="fs-4 fw-bold text-primary lh-1" th:text="${report.seoScore} + '/100'">80/100</span>
-                                </div>
-                            </div>
-                            <div class="progress mt-1" style="height: 6px;">
-                                <div class="progress-bar bg-primary" role="progressbar" 
-                                     th:style="'width: ' + ${report.seoScore} + '%;'">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 3. Punteggio SEM & Conversioni -->
-                        <div class="card border rounded-3 p-2 p-md-3 bg-light-subtle shadow-none border-start border-4 border-success">
-                            <div class="d-flex align-items-center justify-content-between mb-1">
+                        <!-- 3. Punteggio SEM & Conversioni (con Mini Grafico Circolare a Ciambella) -->
+                        <div class="card border rounded-3 p-2 px-3 bg-light-subtle shadow-none border-start border-4 border-success">
+                            <div class="d-flex align-items-center justify-content-between">
                                 <div class="d-flex align-items-center gap-2">
                                     <div class="bg-success-subtle text-success p-1 px-2 rounded-2 fs-6">
                                         <i class="bi bi-graph-up-arrow"></i>
@@ -472,13 +484,12 @@
                                         <span class="text-muted" style="font-size: 0.7rem;">Pixel (GA4/GTM/Meta) e contatti</span>
                                     </div>
                                 </div>
-                                <div class="text-end">
+                                <div class="d-flex align-items-center gap-2">
+                                    <!-- Mini Doughnut Canvas -->
+                                    <div style="width: 38px; height: 38px; position: relative;">
+                                        <canvas id="gaugeSem"></canvas>
+                                    </div>
                                     <span class="fs-4 fw-bold text-success lh-1" th:text="${report.semScore} + '/100'">90/100</span>
-                                </div>
-                            </div>
-                            <div class="progress mt-1" style="height: 6px;">
-                                <div class="progress-bar bg-success" role="progressbar" 
-                                     th:style="'width: ' + ${report.semScore} + '%;'">
                                 </div>
                             </div>
                         </div>
@@ -549,145 +560,157 @@
                         <h6 class="fw-bold mt-1 mb-0">Nessuna criticità rilevata!</h6>
                     </div>
 
-                    <!-- Sezioni Priorità Ben Divise (Seconda Pagina / Action Plan) -->
-                    <div class="d-flex flex-column gap-3" th:unless="${#lists.isEmpty(report.recommendations)}">
+                    <!-- Sezioni Priorità Ben Divise: 3 Colonne che si estendono in Verticale -->
+                    <div class="row g-3 priority-columns-row" th:unless="${#lists.isEmpty(report.recommendations)}">
                         
-                        <!-- 1. SEZIONE PRIORITÀ ALTA -->
-                        <div class="priority-group">
-                            <div class="priority-section-title bg-danger-subtle text-danger border border-danger rounded-3 px-3 py-1 fw-bold mb-2 d-flex align-items-center justify-content-between">
-                                <span><i class="bi bi-exclamation-octagon-fill me-2"></i>Priorità Alta (Azioni Critiche Immediate)</span>
-                                <span class="badge bg-danger text-white rounded-pill small">Intervento Urgente</span>
-                            </div>
-                            <div class="recommendations-container d-flex flex-column gap-2">
-                                <div th:each="rec : ${report.recommendations}" th:if="${rec.priority.name() == 'ALTA'}" 
-                                     class="card border border-danger-subtle rounded-3 p-3 shadow-sm bg-white recommendation-card border-start border-4 border-start-danger">
-                                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-1 mb-1">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <span class="badge bg-danger px-2 py-1 rounded-pill small">
-                                                <i class="bi bi-exclamation-triangle-fill me-1"></i> PRIORITÀ ALTA
+                        <!-- 1. COLONNA VERTICALE: PRIORITÀ ALTA -->
+                        <div class="col-lg-4 col-12 priority-column">
+                            <div class="card border-0 bg-transparent h-100">
+                                <div class="priority-section-title bg-danger-subtle text-danger border border-danger rounded-3 px-3 py-2 fw-bold mb-2 d-flex align-items-center justify-content-between">
+                                    <span class="small"><i class="bi bi-exclamation-octagon-fill me-1"></i>Priorità Alta</span>
+                                    <span class="badge bg-danger text-white rounded-pill" style="font-size: 0.68rem;">Urgente</span>
+                                </div>
+                                <div class="recommendations-container d-flex flex-column gap-2">
+                                    <div th:each="rec : ${report.recommendations}" th:if="${rec.priority.name() == 'ALTA'}" 
+                                         class="card border border-danger-subtle rounded-3 p-3 shadow-sm bg-white recommendation-card border-start border-4 border-start-danger">
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-1 mb-1">
+                                            <span class="badge bg-danger px-2 py-1 rounded-pill small" style="font-size: 0.68rem;">
+                                                <i class="bi bi-exclamation-triangle-fill me-1"></i> ALTA
                                             </span>
-                                            <span class="badge bg-light text-secondary border small" th:text="${rec.category}">SEO</span>
+                                            <span class="small text-muted font-monospace" style="font-size: 0.7rem;" th:text="${rec.id}">REC-01</span>
                                         </div>
-                                        <span class="small text-muted font-monospace" th:text="${rec.id}">REC-01</span>
-                                    </div>
 
-                                    <h5 class="fw-bold text-dark mb-1" th:text="${rec.title}">Titolo Miglioria</h5>
-                                    
-                                    <div class="p-2 bg-light rounded-2 mb-2 border">
-                                        <div class="mb-1 text-dark small">
-                                            <strong class="text-secondary small text-uppercase">Impatto:</strong>
-                                            <span th:text="${rec.impactExplanation}">Spiegazione impatto</span>
+                                        <h6 class="fw-bold text-dark mb-1" th:text="${rec.title}">Titolo Miglioria</h6>
+                                        
+                                        <div class="p-2 bg-light rounded-2 mb-2 border">
+                                            <div class="mb-1 text-dark small" style="font-size: 0.74rem;">
+                                                <strong class="text-secondary text-uppercase" style="font-size: 0.68rem;">Impatto:</strong>
+                                                <span th:text="${rec.impactExplanation}">Spiegazione impatto</span>
+                                            </div>
+                                            <div class="mb-0 text-dark small" style="font-size: 0.74rem;">
+                                                <strong class="text-primary text-uppercase" style="font-size: 0.68rem;">Azione:</strong>
+                                                <span th:text="${rec.suggestedFix}">Azione correttiva</span>
+                                            </div>
                                         </div>
-                                        <div class="mb-0 text-dark small">
-                                            <strong class="text-primary small text-uppercase">Azione:</strong>
-                                            <span th:text="${rec.suggestedFix}">Azione correttiva</span>
+
+                                        <!-- Code Snippet -->
+                                        <div th:if="${rec.codeSnippet != null and !rec.codeSnippet.isBlank()}">
+                                            <div class="d-flex justify-content-between align-items-center mb-1 no-print">
+                                                <span class="text-muted small fw-bold" style="font-size: 0.7rem;"><i class="bi bi-code-slash me-1"></i>Codice:</span>
+                                                <button class="btn btn-sm btn-outline-secondary copy-btn py-0 px-2" style="font-size: 0.68rem;"
+                                                        th:data-snippet="${rec.codeSnippet}">
+                                                    <i class="bi bi-clipboard"></i> Copia
+                                                </button>
+                                            </div>
+                                            <pre class="code-box mb-0"><code th:text="${rec.codeSnippet}"></code></pre>
                                         </div>
                                     </div>
-
-                                    <!-- Code Snippet -->
-                                    <div th:if="${rec.codeSnippet != null and !rec.codeSnippet.isBlank()}">
-                                        <div class="d-flex justify-content-between align-items-center mb-1 no-print">
-                                            <span class="text-muted small fw-bold"><i class="bi bi-code-slash me-1"></i>Codice consigliato:</span>
-                                            <button class="btn btn-sm btn-outline-secondary copy-btn py-0 px-2" 
-                                                    th:data-snippet="${rec.codeSnippet}">
-                                                <i class="bi bi-clipboard"></i> Copia Codice
-                                            </button>
-                                        </div>
-                                        <pre class="code-box mb-0"><code th:text="${rec.codeSnippet}"></code></pre>
+                                    <!-- Segnaposto se vuoto -->
+                                    <div th:if="${#lists.isEmpty(report.recommendations.?[priority.name() == 'ALTA'])}" class="p-3 text-center bg-light rounded-3 text-muted small border">
+                                        <i class="bi bi-check-circle text-success fs-5 d-block mb-1"></i>
+                                        Nessuna criticità ad alta priorità.
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 2. SEZIONE PRIORITÀ MEDIA -->
-                        <div class="priority-group">
-                            <div class="priority-section-title bg-warning-subtle text-dark border border-warning rounded-3 px-3 py-1 fw-bold mb-2 d-flex align-items-center justify-content-between">
-                                <span><i class="bi bi-exclamation-circle-fill text-warning me-2"></i>Priorità Media (Miglioramenti e Avvisi Consigliati)</span>
-                                <span class="badge bg-warning text-dark rounded-pill small">Medio Termine</span>
-                            </div>
-                            <div class="recommendations-container d-flex flex-column gap-2">
-                                <div th:each="rec : ${report.recommendations}" th:if="${rec.priority.name() == 'MEDIA'}" 
-                                     class="card border border-warning-subtle rounded-3 p-3 shadow-sm bg-white recommendation-card border-start border-4 border-start-warning">
-                                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-1 mb-1">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <span class="badge bg-warning text-dark px-2 py-1 rounded-pill small">
-                                                <i class="bi bi-exclamation-circle-fill me-1"></i> PRIORITÀ MEDIA
+                        <!-- 2. COLONNA VERTICALE: PRIORITÀ MEDIA -->
+                        <div class="col-lg-4 col-12 priority-column">
+                            <div class="card border-0 bg-transparent h-100">
+                                <div class="priority-section-title bg-warning-subtle text-dark border border-warning rounded-3 px-3 py-2 fw-bold mb-2 d-flex align-items-center justify-content-between">
+                                    <span class="small"><i class="bi bi-exclamation-circle-fill text-warning me-1"></i>Priorità Media</span>
+                                    <span class="badge bg-warning text-dark rounded-pill" style="font-size: 0.68rem;">Consigliato</span>
+                                </div>
+                                <div class="recommendations-container d-flex flex-column gap-2">
+                                    <div th:each="rec : ${report.recommendations}" th:if="${rec.priority.name() == 'MEDIA'}" 
+                                         class="card border border-warning-subtle rounded-3 p-3 shadow-sm bg-white recommendation-card border-start border-4 border-start-warning">
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-1 mb-1">
+                                            <span class="badge bg-warning text-dark px-2 py-1 rounded-pill small" style="font-size: 0.68rem;">
+                                                <i class="bi bi-exclamation-circle-fill me-1"></i> MEDIA
                                             </span>
-                                            <span class="badge bg-light text-secondary border small" th:text="${rec.category}">SEO</span>
+                                            <span class="small text-muted font-monospace" style="font-size: 0.7rem;" th:text="${rec.id}">REC-02</span>
                                         </div>
-                                        <span class="small text-muted font-monospace" th:text="${rec.id}">REC-02</span>
-                                    </div>
 
-                                    <h5 class="fw-bold text-dark mb-1" th:text="${rec.title}">Titolo Miglioria</h5>
-                                    
-                                    <div class="p-2 bg-light rounded-2 mb-2 border">
-                                        <div class="mb-1 text-dark small">
-                                            <strong class="text-secondary small text-uppercase">Impatto:</strong>
-                                            <span th:text="${rec.impactExplanation}">Spiegazione impatto</span>
+                                        <h6 class="fw-bold text-dark mb-1" th:text="${rec.title}">Titolo Miglioria</h6>
+                                        
+                                        <div class="p-2 bg-light rounded-2 mb-2 border">
+                                            <div class="mb-1 text-dark small" style="font-size: 0.74rem;">
+                                                <strong class="text-secondary text-uppercase" style="font-size: 0.68rem;">Impatto:</strong>
+                                                <span th:text="${rec.impactExplanation}">Spiegazione impatto</span>
+                                            </div>
+                                            <div class="mb-0 text-dark small" style="font-size: 0.74rem;">
+                                                <strong class="text-primary text-uppercase" style="font-size: 0.68rem;">Azione:</strong>
+                                                <span th:text="${rec.suggestedFix}">Azione correttiva</span>
+                                            </div>
                                         </div>
-                                        <div class="mb-0 text-dark small">
-                                            <strong class="text-primary small text-uppercase">Azione:</strong>
-                                            <span th:text="${rec.suggestedFix}">Azione correttiva</span>
+
+                                        <!-- Code Snippet -->
+                                        <div th:if="${rec.codeSnippet != null and !rec.codeSnippet.isBlank()}">
+                                            <div class="d-flex justify-content-between align-items-center mb-1 no-print">
+                                                <span class="text-muted small fw-bold" style="font-size: 0.7rem;"><i class="bi bi-code-slash me-1"></i>Codice:</span>
+                                                <button class="btn btn-sm btn-outline-secondary copy-btn py-0 px-2" style="font-size: 0.68rem;"
+                                                        th:data-snippet="${rec.codeSnippet}">
+                                                    <i class="bi bi-clipboard"></i> Copia
+                                                </button>
+                                            </div>
+                                            <pre class="code-box mb-0"><code th:text="${rec.codeSnippet}"></code></pre>
                                         </div>
                                     </div>
-
-                                    <!-- Code Snippet -->
-                                    <div th:if="${rec.codeSnippet != null and !rec.codeSnippet.isBlank()}">
-                                        <div class="d-flex justify-content-between align-items-center mb-1 no-print">
-                                            <span class="text-muted small fw-bold"><i class="bi bi-code-slash me-1"></i>Codice consigliato:</span>
-                                            <button class="btn btn-sm btn-outline-secondary copy-btn py-0 px-2" 
-                                                    th:data-snippet="${rec.codeSnippet}">
-                                                <i class="bi bi-clipboard"></i> Copia Codice
-                                            </button>
-                                        </div>
-                                        <pre class="code-box mb-0"><code th:text="${rec.codeSnippet}"></code></pre>
+                                    <!-- Segnaposto se vuoto -->
+                                    <div th:if="${#lists.isEmpty(report.recommendations.?[priority.name() == 'MEDIA'])}" class="p-3 text-center bg-light rounded-3 text-muted small border">
+                                        <i class="bi bi-check-circle text-success fs-5 d-block mb-1"></i>
+                                        Nessun avviso a media priorità.
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- 3. SEZIONE PRIORITÀ BASSA -->
-                        <div class="priority-group">
-                            <div class="priority-section-title bg-info-subtle text-dark border border-info rounded-3 px-3 py-1 fw-bold mb-2 d-flex align-items-center justify-content-between">
-                                <span><i class="bi bi-info-circle-fill text-info me-2"></i>Priorità Bassa (Rifiniture e Ottimizzazioni Incrementali)</span>
-                                <span class="badge bg-info-subtle text-dark border rounded-pill small">Opportunità</span>
-                            </div>
-                            <div class="recommendations-container d-flex flex-column gap-2">
-                                <div th:each="rec : ${report.recommendations}" th:if="${rec.priority.name() == 'BASSA'}" 
-                                     class="card border border-info-subtle rounded-3 p-3 shadow-sm bg-white recommendation-card border-start border-4 border-start-info">
-                                    <div class="d-flex flex-wrap justify-content-between align-items-center gap-1 mb-1">
-                                        <div class="d-flex align-items-center gap-2">
-                                            <span class="badge bg-info text-dark px-2 py-1 rounded-pill small">
-                                                <i class="bi bi-info-circle-fill me-1"></i> PRIORITÀ BASSA
+                        <!-- 3. COLONNA VERTICALE: PRIORITÀ BASSA -->
+                        <div class="col-lg-4 col-12 priority-column">
+                            <div class="card border-0 bg-transparent h-100">
+                                <div class="priority-section-title bg-info-subtle text-dark border border-info rounded-3 px-3 py-2 fw-bold mb-2 d-flex align-items-center justify-content-between">
+                                    <span class="small"><i class="bi bi-info-circle-fill text-info me-1"></i>Priorità Bassa</span>
+                                    <span class="badge bg-info-subtle text-dark border rounded-pill" style="font-size: 0.68rem;">Rifinitura</span>
+                                </div>
+                                <div class="recommendations-container d-flex flex-column gap-2">
+                                    <div th:each="rec : ${report.recommendations}" th:if="${rec.priority.name() == 'BASSA'}" 
+                                         class="card border border-info-subtle rounded-3 p-3 shadow-sm bg-white recommendation-card border-start border-4 border-start-info">
+                                        <div class="d-flex flex-wrap justify-content-between align-items-center gap-1 mb-1">
+                                            <span class="badge bg-info text-dark px-2 py-1 rounded-pill small" style="font-size: 0.68rem;">
+                                                <i class="bi bi-info-circle-fill me-1"></i> BASSA
                                             </span>
-                                            <span class="badge bg-light text-secondary border small" th:text="${rec.category}">SEO</span>
+                                            <span class="small text-muted font-monospace" style="font-size: 0.7rem;" th:text="${rec.id}">REC-03</span>
                                         </div>
-                                        <span class="small text-muted font-monospace" th:text="${rec.id}">REC-03</span>
-                                    </div>
 
-                                    <h5 class="fw-bold text-dark mb-1" th:text="${rec.title}">Titolo Miglioria</h5>
-                                    
-                                    <div class="p-2 bg-light rounded-2 mb-2 border">
-                                        <div class="mb-1 text-dark small">
-                                            <strong class="text-secondary small text-uppercase">Impatto:</strong>
-                                            <span th:text="${rec.impactExplanation}">Spiegazione impatto</span>
+                                        <h6 class="fw-bold text-dark mb-1" th:text="${rec.title}">Titolo Miglioria</h6>
+                                        
+                                        <div class="p-2 bg-light rounded-2 mb-2 border">
+                                            <div class="mb-1 text-dark small" style="font-size: 0.74rem;">
+                                                <strong class="text-secondary text-uppercase" style="font-size: 0.68rem;">Impatto:</strong>
+                                                <span th:text="${rec.impactExplanation}">Spiegazione impatto</span>
+                                            </div>
+                                            <div class="mb-0 text-dark small" style="font-size: 0.74rem;">
+                                                <strong class="text-primary text-uppercase" style="font-size: 0.68rem;">Azione:</strong>
+                                                <span th:text="${rec.suggestedFix}">Azione correttiva</span>
+                                            </div>
                                         </div>
-                                        <div class="mb-0 text-dark small">
-                                            <strong class="text-primary small text-uppercase">Azione:</strong>
-                                            <span th:text="${rec.suggestedFix}">Azione correttiva</span>
+
+                                        <!-- Code Snippet -->
+                                        <div th:if="${rec.codeSnippet != null and !rec.codeSnippet.isBlank()}">
+                                            <div class="d-flex justify-content-between align-items-center mb-1 no-print">
+                                                <span class="text-muted small fw-bold" style="font-size: 0.7rem;"><i class="bi bi-code-slash me-1"></i>Codice:</span>
+                                                <button class="btn btn-sm btn-outline-secondary copy-btn py-0 px-2" style="font-size: 0.68rem;"
+                                                        th:data-snippet="${rec.codeSnippet}">
+                                                    <i class="bi bi-clipboard"></i> Copia
+                                                </button>
+                                            </div>
+                                            <pre class="code-box mb-0"><code th:text="${rec.codeSnippet}"></code></pre>
                                         </div>
                                     </div>
-
-                                    <!-- Code Snippet -->
-                                    <div th:if="${rec.codeSnippet != null and !rec.codeSnippet.isBlank()}">
-                                        <div class="d-flex justify-content-between align-items-center mb-1 no-print">
-                                            <span class="text-muted small fw-bold"><i class="bi bi-code-slash me-1"></i>Codice consigliato:</span>
-                                            <button class="btn btn-sm btn-outline-secondary copy-btn py-0 px-2" 
-                                                    th:data-snippet="${rec.codeSnippet}">
-                                                <i class="bi bi-clipboard"></i> Copia Codice
-                                            </button>
-                                        </div>
-                                        <pre class="code-box mb-0"><code th:text="${rec.codeSnippet}"></code></pre>
+                                    <!-- Segnaposto se vuoto -->
+                                    <div th:if="${#lists.isEmpty(report.recommendations.?[priority.name() == 'BASSA'])}" class="p-3 text-center bg-light rounded-3 text-muted small border">
+                                        <i class="bi bi-check-circle text-success fs-5 d-block mb-1"></i>
+                                        Nessuna azione a bassa priorità.
                                     </div>
                                 </div>
                             </div>
@@ -1058,8 +1081,35 @@
         const seoScore = /*[[${report.seoScore}]]*/ 80;
         const semScore = /*[[${report.semScore}]]*/ 90;
 
-        // Inizializzazione Grafico a Torta / Ciambella con Percentuali
+        // Inizializzazione Grafico a Torta / Ciambella Principale e Mini Gauges
         document.addEventListener('DOMContentLoaded', () => {
+            // Helper per creare mini doughnut gauge
+            function createMiniGauge(canvasId, value, color) {
+                const canvas = document.getElementById(canvasId);
+                if (!canvas) return;
+                new Chart(canvas, {
+                    type: 'doughnut',
+                    data: {
+                        datasets: [{
+                            data: [value, Math.max(0, 100 - value)],
+                            backgroundColor: [color, '#e2e8f0'],
+                            borderWidth: 0
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        cutout: '72%',
+                        layout: { padding: 1 },
+                        plugins: {
+                            legend: { display: false },
+                            tooltip: { enabled: false }
+                        }
+                    }
+                });
+            }
+
+            // 1. Torta Principale Ripartizione
             const ctx = document.getElementById('scorePieChart');
             if (ctx) {
                 new Chart(ctx, {
@@ -1071,17 +1121,18 @@
                             backgroundColor: ['#0d6efd', '#198754'],
                             borderWidth: 2,
                             borderColor: '#ffffff',
-                            hoverOffset: 4
+                            hoverOffset: 3
                         }]
                     },
                     options: {
                         responsive: true,
                         maintainAspectRatio: false,
                         cutout: '62%',
+                        layout: {
+                            padding: 2
+                        },
                         plugins: {
-                            legend: {
-                                display: false
-                            },
+                            legend: { display: false },
                             tooltip: {
                                 callbacks: {
                                     label: function(context) {
@@ -1093,6 +1144,12 @@
                     }
                 });
             }
+
+            // 2. Mini Gauges nelle tre card specifiche
+            const overallColor = overallScore >= 75 ? '#198754' : (overallScore >= 50 ? '#ffc107' : '#dc3545');
+            createMiniGauge('gaugeOverall', overallScore, overallColor);
+            createMiniGauge('gaugeSeo', seoScore, '#0d6efd');
+            createMiniGauge('gaugeSem', semScore, '#198754');
         });
 
 
