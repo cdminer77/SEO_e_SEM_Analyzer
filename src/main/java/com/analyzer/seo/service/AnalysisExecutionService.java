@@ -53,8 +53,7 @@ public class AnalysisExecutionService {
             report.setTargetUrl(crawl.normalizedUrl());
 
             try {
-                String encodedUrl = URLEncoder.encode(crawl.normalizedUrl(), StandardCharsets.UTF_8);
-                report.setScreenshotUrl("https://s.wordpress.com/mshots/v1/" + encodedUrl + "?w=800&h=600");
+                report.setScreenshotUrl("https://image.thum.io/get/width/800/crop/600/" + crawl.normalizedUrl());
             } catch (Exception ignored) {}
 
             jobManagerService.emitLog(jobId, "NETWORK", 

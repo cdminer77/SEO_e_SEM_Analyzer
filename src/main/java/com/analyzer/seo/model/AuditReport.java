@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class AuditReport {
     private String id;
@@ -19,7 +20,7 @@ public class AuditReport {
     private String screenshotUrl;
     private List<AuditIssue> issues = new ArrayList<>();
     private List<RecommendationItem> recommendations = new ArrayList<>();
-    private List<LogEvent> logs = new ArrayList<>();
+    private List<LogEvent> logs = new CopyOnWriteArrayList<>();
 
     public AuditReport() {
         this.analyzedAt = LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss"));
