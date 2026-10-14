@@ -102,13 +102,19 @@
                 break-before: auto !important;
             }
 
-            /* Header Report Compatto */
+            /* Header Report Compatto con Logo */
             .report-header-card {
                 padding: 8px 12px !important;
                 margin-bottom: 8px !important;
                 border-bottom: 2px solid #0d6efd !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
+            }
+
+            .report-header-logo {
+                height: 54px !important;
+                width: auto !important;
+                object-fit: contain !important;
             }
 
             .report-header-card h1 {
@@ -377,10 +383,10 @@
 <body class="bg-light text-dark d-flex flex-column min-vh-100">
 
     <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-3 no-print">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-2 no-print">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="/">
-                <span class="badge bg-primary p-2 rounded-3"><i class="bi bi-speedometer2 fs-5"></i></span>
+                <img src="/img/logo.png" alt="Logo" class="rounded-2" style="height: 38px; width: auto; object-fit: contain;">
                 <span>SEO & SEM <span class="text-primary">Analyzer</span></span>
             </a>
             <div class="d-flex align-items-center gap-2">
@@ -398,23 +404,29 @@
     <main class="container my-3 my-md-4 flex-grow-1">
 
         <!-- Report Header Card -->
-        <div class="card border-0 shadow-sm rounded-4 p-4 mb-3 bg-white report-header-card">
+        <div class="card border-0 shadow-sm rounded-4 p-3 p-md-4 mb-3 bg-white report-header-card">
             <div class="row align-items-center">
-                <div class="col-lg-8">
-                    <div class="d-flex align-items-center gap-2 mb-1">
-                        <span class="badge bg-success-subtle text-success border border-success px-2 py-1 rounded-pill fw-semibold small">
-                            <i class="bi bi-check-circle-fill me-1"></i> Report Archiviato
-                        </span>
-                        <span class="text-muted small">
-                            <i class="bi bi-calendar3 me-1"></i> Data: <strong th:text="${report.analyzedAt}">09/10/2026</strong>
-                        </span>
+                <div class="col-lg-8 d-flex align-items-center gap-3">
+                    <!-- Logo a sinistra nell'Header -->
+                    <div class="d-flex align-items-center flex-shrink-0">
+                        <img src="/img/logo.png" alt="Logo SEO & SEM Analyzer" class="report-header-logo rounded-3 border p-1 bg-white shadow-sm" style="height: 64px; width: auto; object-fit: contain;">
                     </div>
-                    <h1 class="h4 fw-bold mb-1 text-break">
-                        Report Diagnostico: <span class="text-primary" th:text="${report.targetUrl}">https://example.com</span>
-                    </h1>
-                    <p class="text-muted small mb-0 d-none d-print-block">
-                        Audit SEO On-Page, Mobile Readiness, Tracking SEM e Conversion Rate Optimization.
-                    </p>
+                    <div class="flex-grow-1 min-w-0">
+                        <div class="d-flex align-items-center gap-2 mb-1 flex-wrap">
+                            <span class="badge bg-success-subtle text-success border border-success px-2 py-1 rounded-pill fw-semibold small">
+                                <i class="bi bi-check-circle-fill me-1"></i> Report Archiviato
+                            </span>
+                            <span class="text-muted small">
+                                <i class="bi bi-calendar3 me-1"></i> Data: <strong th:text="${report.analyzedAt}">09/10/2026</strong>
+                            </span>
+                        </div>
+                        <h1 class="h4 fw-bold mb-1 text-break">
+                            Report Diagnostico: <span class="text-primary" th:text="${report.targetUrl}">https://example.com</span>
+                        </h1>
+                        <p class="text-muted small mb-0 d-none d-print-block">
+                            Audit SEO On-Page, Mobile Readiness, Tracking SEM e Conversion Rate Optimization.
+                        </p>
+                    </div>
                 </div>
                 <div class="col-lg-4 text-lg-end mt-2 mt-lg-0 no-print">
                     <a th:href="@{'/api/report/' + ${report.id}}" target="_blank" class="btn btn-outline-secondary btn-sm rounded-pill px-3">
