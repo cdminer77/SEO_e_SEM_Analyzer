@@ -122,31 +122,41 @@
                 margin: 0 0 2px 0 !important;
             }
 
-            /* Showcase compatto in stampa: Screenshot esteso a sinistra e Punteggi a destra */
             .showcase-card {
-                padding: 8px 12px !important;
+                padding: 6px 8px !important;
                 margin-bottom: 8px !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
+                box-sizing: border-box !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                overflow: hidden !important;
             }
 
             .showcase-card .row {
                 display: flex !important;
                 flex-direction: row !important;
                 flex-wrap: nowrap !important;
-                gap: 12px !important;
+                gap: 8px !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                width: 100% !important;
             }
 
             .showcase-card .col-lg-7 {
-                width: 58% !important;
-                max-width: 58% !important;
-                flex: 0 0 58% !important;
+                width: 54% !important;
+                max-width: 54% !important;
+                flex: 0 0 54% !important;
+                padding-left: 0 !important;
+                padding-right: 4px !important;
             }
 
             .showcase-card .col-lg-5 {
-                width: 42% !important;
-                max-width: 42% !important;
-                flex: 0 0 42% !important;
+                width: 46% !important;
+                max-width: 46% !important;
+                flex: 0 0 46% !important;
+                padding-left: 4px !important;
+                padding-right: 0 !important;
             }
 
             .browser-window {
@@ -168,39 +178,73 @@
             }
 
             .showcase-card .card {
-                padding: 6px 10px !important;
+                padding: 6px 8px !important;
                 margin-bottom: 4px !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
+                box-sizing: border-box !important;
+            }
+
+            .showcase-card .row.g-2 {
+                display: flex !important;
+                flex-direction: row !important;
+                flex-wrap: nowrap !important;
+                gap: 6px !important;
+                margin-left: 0 !important;
+                margin-right: 0 !important;
+                width: 100% !important;
+            }
+
+            .showcase-card .row.g-2 > .col-4 {
+                flex: 1 1 0% !important;
+                width: 33.333% !important;
+                max-width: 33.333% !important;
+                padding: 0 !important;
+                box-sizing: border-box !important;
             }
 
             .showcase-card .score-card-item {
-                padding: 4px 4px !important;
+                padding: 4px 2px !important;
                 margin-bottom: 0 !important;
                 page-break-inside: avoid !important;
                 break-inside: avoid !important;
+                width: 100% !important;
+                box-sizing: border-box !important;
             }
 
             .showcase-card .score-card-item .small {
-                font-size: 0.62rem !important;
-            }
-
-            .showcase-card .score-card-item .fs-5 {
-                font-size: 0.85rem !important;
-            }
-
-            .showcase-card .score-card-item .text-muted {
                 font-size: 0.58rem !important;
             }
 
+            .showcase-card .score-card-item .fs-5 {
+                font-size: 0.80rem !important;
+            }
+
+            .showcase-card .score-card-item .text-muted {
+                font-size: 0.53rem !important;
+            }
+
             .showcase-card .score-card-item .gauge-wrapper {
-                width: 36px !important;
-                height: 36px !important;
+                width: 32px !important;
+                height: 32px !important;
             }
 
             .score-chart-container {
-                max-height: 100px !important;
-                height: 95px !important;
+                max-height: 95px !important;
+                height: 90px !important;
+                width: 90px !important;
+                max-width: 90px !important;
+                margin: 0 auto !important;
+                overflow: visible !important;
+                display: block !important;
+                position: relative !important;
+            }
+
+            .score-chart-container canvas {
+                max-width: 90px !important;
+                max-height: 90px !important;
+                width: 90px !important;
+                height: 90px !important;
             }
 
             /* Solo le card singole foglia evitano lo spezzamento */
@@ -485,7 +529,7 @@
                         <!-- Riquadro Superiore: Grafico a Torta / Ciambella Ripartizione Analisi -->
                         <div class="card border rounded-3 p-2 bg-white shadow-none border-secondary-subtle">
                             <div class="row align-items-center g-2">
-                                <div class="col-5 text-center position-relative score-chart-container" style="height: 100px; max-height: 100px; overflow: hidden; padding: 2px;">
+                                <div class="col-5 text-center position-relative score-chart-container" style="height: 100px; width: 100px; max-width: 100px; margin: 0 auto; padding: 2px;">
                                     <canvas id="scorePieChart"></canvas>
                                 </div>
                                 <div class="col-7 pe-2">
@@ -1228,6 +1272,18 @@
             createMiniGauge('gaugeOverall', overallScore, overallColor);
             createMiniGauge('gaugeSeo', seoScore, '#0d6efd');
             createMiniGauge('gaugeSem', semScore, '#198754');
+
+            // 3. Forzatura ridimensionamento Chart.js in fase di stampa per evitare ritagli vettoriali
+            window.addEventListener('beforeprint', () => {
+                for (let id in Chart.instances) {
+                    Chart.instances[id].resize();
+                }
+            });
+            window.addEventListener('afterprint', () => {
+                for (let id in Chart.instances) {
+                    Chart.instances[id].resize();
+                }
+            });
         });
 
 
