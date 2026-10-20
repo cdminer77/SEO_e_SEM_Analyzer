@@ -2,8 +2,9 @@
 <html lang="it" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SEO & SEM Analyzer - Analisi Siti Web e Diagnostica Avanzata</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="Audit SEO On-Page, Mobile Readiness, tracciamento pixel SEM (GA4, GTM, Meta) e raccomandazioni operative con codice pronto per il tuo sito web.">
+    <title>SEO & SEM Analyzer | Audit e Diagnostica Siti Web</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->
@@ -16,7 +17,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm py-2">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center gap-2 fw-bold" href="/">
-                <img src="/img/logo.png" alt="Logo" class="rounded-2" style="height: 38px; width: auto; object-fit: contain;">
+                <img src="/img/logo.png" alt="Logo SEO & SEM Analyzer" class="rounded-2 aspect-logo" style="height: 38px; width: auto; object-fit: contain;">
                 <span>SEO & SEM <span class="text-primary">Analyzer</span></span>
             </a>
             <span class="navbar-text text-light-emphasis small d-none d-md-inline">
@@ -25,194 +26,264 @@
         </div>
     </nav>
 
-    <!-- Main Content -->
-    <main class="container my-auto py-5">
-        <div class="row justify-content-center">
-            <div class="col-lg-10 col-xl-9">
+    <!-- Main Content con Padding Fluido -->
+    <main class="container section-fluid-padding flex-grow-1">
+        
+        <!-- Hero Section a 2 Colonne (min-height: min(80vh, 640px)) -->
+        <section class="hero-section mb-5">
+            <div class="row align-items-center g-4 g-lg-5 w-100 mx-auto">
                 
-                <!-- Hero Header -->
-                <div class="text-center mb-5">
-                    <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold mb-3">
-                        <i class="bi bi-cpu me-1"></i> Motore di Analisi Diagnostica v1.0 &bull; Database Persistente
-                    </span>
-                    <h1 class="display-5 fw-bold text-dark mb-3">
+                <!-- Colonna Sinistra: Headline, Valore e Badge di Affidabilità -->
+                <div class="col-lg-6">
+                    <div class="d-inline-flex align-items-center gap-2 bg-primary-subtle text-primary border border-primary-subtle px-3 py-2 rounded-pill fw-semibold small mb-3">
+                        <i class="bi bi-cpu-fill"></i> Motore Diagnostico v1.0 &bull; Database H2 Permanente
+                    </div>
+                    
+                    <h1 class="display-5 fw-bold text-dark lh-tight mb-3">
                         Analizza il tuo sito web sotto l'aspetto <span class="text-primary">SEO</span> e <span class="text-success">SEM</span>
                     </h1>
-                    <p class="lead text-secondary mx-auto" style="max-width: 700px;">
-                        Scansione in tempo reale di meta tag, gerarchia headings, velocità di risposta, pixel di tracciamento (GA4, GTM, Meta), conversion rate e raccomandazioni operative con codice pronto all'uso. I tuoi dati vengono archiviati permanentemente in locale.
+                    
+                    <p class="lead text-secondary mb-4" style="font-size: 1.05rem; line-height: 1.6;">
+                        Audit completo in tempo reale: gerarchia semantica, meta tag, velocità, pixel di tracciamento (GA4, GTM, Meta Pixel) e Action Plan con codice pronto all'uso. I tuoi dati restano archiviati nel tuo database locale permanente.
                     </p>
-                </div>
 
-                <!-- Input Form Card -->
-                <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 mb-5 bg-white">
-                    <form action="/analyze" method="post" id="analyzeForm">
-                        <div class="mb-4">
-                            <label for="url" class="form-label fw-bold fs-6 text-dark d-flex align-items-center gap-2">
-                                <i class="bi bi-link-45deg text-primary fs-5"></i> Inserisci l'indirizzo del sito web da analizzare
-                            </label>
-                            <div class="input-group input-group-lg shadow-sm">
-                                <span class="input-group-text bg-white border-end-0 text-muted">
-                                    <i class="bi bi-globe2"></i>
-                                </span>
-                                <input type="text" class="form-control border-start-0 ps-0" id="url" name="url" 
-                                       placeholder="es. https://www.tuosito.it" required autofocus>
-                                <button class="btn btn-primary px-4 fw-semibold d-flex align-items-center gap-2" type="submit">
-                                    <span>Avvia Analisi</span>
-                                    <i class="bi bi-arrow-right"></i>
-                                </button>
-                            </div>
-                            <div class="form-text mt-2 text-muted">
-                                <i class="bi bi-info-circle me-1"></i> Puoi inserire l'URL con o senza <code>https://</code>.
-                            </div>
-                        </div>
-
-                        <!-- Esempi veloci -->
-                        <div class="d-flex flex-wrap align-items-center gap-2 pt-2 border-top">
-                            <span class="text-muted small fw-medium">Test rapido:</span>
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill sample-btn" data-url="https://github.com">GitHub</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill sample-btn" data-url="https://spring.io">Spring.io</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill sample-btn" data-url="https://wikipedia.org">Wikipedia</button>
-                        </div>
-                    </form>
-                </div>
-
-                <!-- Feature Grid -->
-                <div class="row g-4 mb-5">
-                    <div class="col-md-4">
-                        <div class="card h-100 border-0 bg-white p-3 shadow-sm rounded-3">
-                            <div class="d-flex align-items-center gap-3 mb-2">
-                                <div class="bg-primary-subtle text-primary p-2 rounded-3 fs-4">
-                                    <i class="bi bi-search"></i>
-                                </div>
-                                <h5 class="fw-bold mb-0">Audit SEO</h5>
-                            </div>
-                            <p class="text-muted small mb-0">
-                                Titolo, meta description, H1-H6, immagini prive di alt, canonical, robots.txt, sitemap.xml e Schema.org.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="card h-100 border-0 bg-white p-3 shadow-sm rounded-3">
-                            <div class="d-flex align-items-center gap-3 mb-2">
-                                <div class="bg-success-subtle text-success p-2 rounded-3 fs-4">
-                                    <i class="bi bi-graph-up-arrow"></i>
-                                </div>
-                                <h5 class="fw-bold mb-0">Audit SEM & CRO</h5>
-                            </div>
-                            <p class="text-muted small mb-0">
-                                Rilevamento pixel GA4, GTM, Meta Pixel, canali di lead gen (WhatsApp, Form, Click-to-call) e simulatore Google Ads.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
-                        <div class="card h-100 border-0 bg-white p-3 shadow-sm rounded-3">
-                            <div class="d-flex align-items-center gap-3 mb-2">
-                                <div class="bg-info-subtle text-info p-2 rounded-3 fs-4">
-                                    <i class="bi bi-lightning-charge"></i>
-                                </div>
-                                <h5 class="fw-bold mb-0">Log & Grafici Live</h5>
-                            </div>
-                            <p class="text-muted small mb-0">
-                                Visualizzazione grafica degli step e terminale in tempo reale tramite connessione Server-Sent Events (SSE).
-                            </p>
-                        </div>
+                    <div class="d-flex flex-wrap gap-2 text-muted small">
+                        <span class="badge bg-white text-secondary border px-3 py-2 rounded-pill shadow-sm">
+                            <i class="bi bi-lightning-charge text-warning me-1"></i> Scansione Istantanea
+                        </span>
+                        <span class="badge bg-white text-secondary border px-3 py-2 rounded-pill shadow-sm">
+                            <i class="bi bi-shield-check text-success me-1"></i> Privacy & Archivio Locale
+                        </span>
+                        <span class="badge bg-white text-secondary border px-3 py-2 rounded-pill shadow-sm">
+                            <i class="bi bi-code-slash text-primary me-1"></i> Snippet Pronti al Copia/Incolla
+                        </span>
                     </div>
                 </div>
 
-                <!-- Sezione Storico Analisi Effettuate (Persistenza Permanente) -->
-                <div class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <div class="d-flex align-items-center gap-2">
-                            <div class="bg-warning-subtle text-warning-emphasis p-2 rounded-3 fs-5">
-                                <i class="bi bi-clock-history"></i>
+                <!-- Colonna Destra: Card Form di Scansione Operativo -->
+                <div class="col-lg-6">
+                    <div class="card border-0 shadow-lg rounded-4 p-4 p-md-5 bg-white">
+                        <h2 class="h5 fw-bold text-dark mb-3 d-flex align-items-center gap-2">
+                            <i class="bi bi-link-45deg text-primary fs-4"></i> Inserisci il sito da scansionare
+                        </h2>
+                        
+                        <form action="/analyze" method="post" id="analyzeForm">
+                            <div class="mb-3">
+                                <label for="url" class="form-label visually-hidden">Indirizzo del sito web</label>
+                                <div class="input-group input-group-lg shadow-sm">
+                                    <span class="input-group-text bg-white border-end-0 text-muted">
+                                        <i class="bi bi-globe2"></i>
+                                    </span>
+                                    <input type="text" class="form-control border-start-0 ps-0" id="url" name="url" 
+                                           placeholder="es. https://www.tuosito.it" required autofocus>
+                                    <button class="btn btn-primary px-4 fw-semibold d-flex align-items-center gap-2" type="submit">
+                                        <span>Avvia</span>
+                                        <i class="bi bi-arrow-right"></i>
+                                    </button>
+                                </div>
+                                <div class="form-text mt-2 text-muted small">
+                                    <i class="bi bi-info-circle me-1"></i> Puoi inserire l'URL con o senza <code>https://</code>.
+                                </div>
                             </div>
-                            <div>
-                                <h4 class="fw-bold mb-0">Storico delle Analisi Archiviate</h4>
-                                <span class="text-muted small">I report vengono salvati permanentemente sul database locale e sono sempre disponibili.</span>
+
+                            <!-- Esempi veloci -->
+                            <div class="d-flex flex-wrap align-items-center gap-2 pt-3 border-top">
+                                <span class="text-muted small fw-medium">Test rapido:</span>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill sample-btn" data-url="https://github.com">GitHub</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill sample-btn" data-url="https://spring.io">Spring.io</button>
+                                <button type="button" class="btn btn-sm btn-outline-secondary rounded-pill sample-btn" data-url="https://wikipedia.org">Wikipedia</button>
                             </div>
-                        </div>
-                        <span class="badge bg-secondary-subtle text-dark border px-3 py-2 rounded-pill" 
-                              th:text="${history != null ? #lists.size(history) + ' Report Salvati' : '0 Report'}">0 Report</span>
-                    </div>
-
-                    <div th:if="${history == null or #lists.isEmpty(history)}" class="p-4 text-center bg-light rounded-3 text-muted">
-                        <i class="bi bi-archive fs-2 d-block mb-2 text-secondary"></i>
-                        <p class="mb-0">Nessuna analisi archiviata al momento. Inserisci un URL qui sopra per avviare il primo audit permanente!</p>
-                    </div>
-
-                    <div th:unless="${history == null or #lists.isEmpty(history)}" class="table-responsive">
-                        <table class="table table-hover align-middle mb-0">
-                            <thead class="table-light small">
-                                <tr>
-                                    <th>Sito Web Scansionato</th>
-                                    <th>Data e Ora</th>
-                                    <th class="text-center">Score Globale</th>
-                                    <th class="text-center">SEO</th>
-                                    <th class="text-center">SEM</th>
-                                    <th class="text-end">Azioni</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr th:each="item : ${history}">
-                                    <td>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <img th:if="${item.screenshotUrl != null}" th:src="${item.screenshotUrl}" alt="Preview" 
-                                                 class="rounded border shadow-sm flex-shrink-0" style="width: 44px; height: 30px; object-fit: cover;" 
-                                                 onerror="this.style.display='none';">
-                                            <span class="fw-bold text-dark text-break" th:text="${item.targetUrl}">https://example.com</span>
-                                        </div>
-                                    </td>
-                                    <td class="small text-muted" th:text="${item.analyzedAt}">01/01/2026 12:00</td>
-                                    <td class="text-center">
-                                        <span class="badge px-3 py-2 rounded-pill fw-bold"
-                                              th:classappend="${item.overallScore >= 75 ? 'bg-success' : (item.overallScore >= 50 ? 'bg-warning text-dark' : 'bg-danger')}"
-                                              th:text="${item.overallScore} + '/100'">85/100</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-primary-subtle text-primary border" th:text="${item.seoScore} + '/100'">80/100</span>
-                                    </td>
-                                    <td class="text-center">
-                                        <span class="badge bg-success-subtle text-success border" th:text="${item.semScore} + '/100'">90/100</span>
-                                    </td>
-                                    <td class="text-end">
-                                        <div class="d-inline-flex gap-2">
-                                            <a th:href="@{'/report/' + ${item.id}}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
-                                                <i class="bi bi-eye me-1"></i> Apri Report
-                                            </a>
-                                            <form th:action="@{'/report/delete/' + ${item.id}}" method="post" class="d-inline"
-                                                  onsubmit="return confirm('Sei sicuro di voler eliminare questo report archiviato?');">
-                                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill" title="Elimina">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                        </form>
                     </div>
                 </div>
 
             </div>
-        </div>
+        </section>
+
+        <!-- Feature Grid con align-items: stretch e Gap Fluido 16-24px -->
+        <section class="row grid-gap-fluid mb-5 align-items-stretch">
+            <div class="col-md-4 d-flex">
+                <div class="card w-100 border-0 bg-white p-4 shadow-sm rounded-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="bg-primary-subtle text-primary p-2 rounded-3 fs-4">
+                                <i class="bi bi-search"></i>
+                            </div>
+                            <h3 class="h5 fw-bold mb-0">Audit SEO</h3>
+                        </div>
+                        <p class="text-muted small mb-0">
+                            Titolo, meta description, gerarchia H1-H6, immagini prive di alt tag, canonical, robots.txt, sitemap.xml e Schema.org structured data.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 d-flex">
+                <div class="card w-100 border-0 bg-white p-4 shadow-sm rounded-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="bg-success-subtle text-success p-2 rounded-3 fs-4">
+                                <i class="bi bi-graph-up-arrow"></i>
+                            </div>
+                            <h3 class="h5 fw-bold mb-0">Audit SEM & CRO</h3>
+                        </div>
+                        <p class="text-muted small mb-0">
+                            Rilevamento pixel GA4, Google Tag Manager, Meta Pixel, canali di lead gen (WhatsApp, Form, Click-to-call) e simulatore Google Ads.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 d-flex">
+                <div class="card w-100 border-0 bg-white p-4 shadow-sm rounded-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <div class="d-flex align-items-center gap-3 mb-3">
+                            <div class="bg-info-subtle text-info p-2 rounded-3 fs-4">
+                                <i class="bi bi-lightning-charge"></i>
+                            </div>
+                            <h3 class="h5 fw-bold mb-0">Log & Grafici Live</h3>
+                        </div>
+                        <p class="text-muted small mb-0">
+                            Visualizzazione in tempo reale degli step diagnostici con terminale live Server-Sent Events (SSE) e persistenza H2 permanente.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Sezione Storico Analisi Effettuate (Persistenza Permanente) -->
+        <section class="card border-0 shadow-sm rounded-4 p-4 bg-white mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+                <div class="d-flex align-items-center gap-2">
+                    <div class="bg-warning-subtle text-warning-emphasis p-2 rounded-3 fs-5">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div>
+                        <h2 class="h5 fw-bold mb-0">Storico delle Analisi Archiviate</h2>
+                        <span class="text-muted small">I report vengono salvati permanentemente sul database locale e sono sempre consultabili.</span>
+                    </div>
+                </div>
+                <span class="badge bg-secondary-subtle text-dark border px-3 py-2 rounded-pill" 
+                      th:text="${history != null ? #lists.size(history) + ' Report Salvati' : '0 Report'}">0 Report</span>
+            </div>
+
+            <div th:if="${history == null or #lists.isEmpty(history)}" class="p-4 text-center bg-light rounded-3 text-muted">
+                <i class="bi bi-archive fs-2 d-block mb-2 text-secondary"></i>
+                <p class="mb-0">Nessuna analisi archiviata al momento. Inserisci un URL qui sopra per avviare il primo audit permanente!</p>
+            </div>
+
+            <div th:unless="${history == null or #lists.isEmpty(history)}" class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light small">
+                        <tr>
+                            <th>Sito Web Scansionato</th>
+                            <th>Data e Ora</th>
+                            <th class="text-center">Score Globale</th>
+                            <th class="text-center">SEO</th>
+                            <th class="text-center">SEM</th>
+                            <th class="text-end">Azioni</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="item : ${history}">
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <img th:if="${item.screenshotUrl != null}" th:src="${item.screenshotUrl}" alt="Anteprima del sito scansionato" 
+                                         loading="lazy" decoding="async"
+                                         class="rounded border shadow-sm flex-shrink-0 aspect-thumb" style="width: 48px; height: 30px;" 
+                                         onerror="this.style.display='none';">
+                                    <span class="fw-bold text-dark text-break" th:text="${item.targetUrl}">https://example.com</span>
+                                </div>
+                            </td>
+                            <td class="small text-muted" th:text="${item.analyzedAt}">01/01/2026 12:00</td>
+                            <td class="text-center">
+                                <span class="badge px-3 py-2 rounded-pill fw-bold"
+                                      th:classappend="${item.overallScore >= 75 ? 'bg-success' : (item.overallScore >= 50 ? 'bg-warning text-dark' : 'bg-danger')}"
+                                      th:text="${item.overallScore} + '/100'">85/100</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-primary-subtle text-primary border" th:text="${item.seoScore} + '/100'">80/100</span>
+                            </td>
+                            <td class="text-center">
+                                <span class="badge bg-success-subtle text-success border" th:text="${item.semScore} + '/100'">90/100</span>
+                            </td>
+                            <td class="text-end">
+                                <div class="d-inline-flex gap-2">
+                                    <a th:href="@{'/report/' + ${item.id}}" class="btn btn-sm btn-outline-primary rounded-pill px-3">
+                                        <i class="bi bi-eye me-1"></i> Apri Report
+                                    </a>
+                                    <form th:action="@{'/report/delete/' + ${item.id}}" method="post" class="d-inline"
+                                          onsubmit="return confirm('Sei sicuro di voler eliminare questo report archiviato?');">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill" title="Elimina">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
     </main>
 
-    <!-- Footer -->
+    <!-- Footer Pulito e Semantico -->
     <footer class="bg-white border-top py-3 mt-auto">
         <div class="container text-center text-muted small">
-            &copy; 2026 SEO & SEM Analyzer &bull; Spring Boot 3, Thymeleaf &bull; Persistenza H2 Locale &bull; By <Afterbit class="com"></Afterbit>
+            &copy; 2026 SEO & SEM Analyzer &bull; Spring Boot 3 &bull; Thymeleaf &bull; Persistenza H2 Locale &bull; By <a href="https://afterbit.com" target="_blank" rel="noopener noreferrer" class="text-decoration-none fw-semibold text-secondary">Afterbit.com</a>
         </div>
     </footer>
 
-    <!-- Script per esempi rapidi -->
+    <!-- Banner Cookie Compatto Fisso in Basso con Pulsanti in Linea -->
+    <div id="cookieBanner" class="cookie-banner d-none" role="region" aria-label="Informativa Cookie e Privacy">
+        <div class="container">
+            <div class="d-flex flex-column flex-md-row align-items-center justify-content-between gap-3">
+                <div class="cookie-banner-text d-flex align-items-center gap-2">
+                    <i class="bi bi-cookie fs-4 text-warning flex-shrink-0"></i>
+                    <span>
+                        Questo applicativo archivia i report diagnostici nel database locale permanente e impiega cookie tecnici per il corretto funzionamento. <a href="#" onclick="alert('Informativa Privacy & Cookie:\nQuesto software memorizza i dati delle scansioni in locale nel database H2 e non condivide dati di navigazione con terze parti.'); return false;">Informativa Cookie & Privacy</a>.
+                    </span>
+                </div>
+                <div class="d-flex align-items-center gap-2 flex-shrink-0">
+                    <button type="button" id="cookieReject" class="btn btn-outline-light btn-sm rounded-pill px-3">
+                        Solo necessari
+                    </button>
+                    <button type="button" id="cookieAccept" class="btn btn-primary btn-sm rounded-pill px-3 fw-semibold">
+                        Accetta tutti
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script per esempi rapidi e Gestione Cookie Banner -->
     <script>
+        // Esempi rapidi
         document.querySelectorAll('.sample-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 document.getElementById('url').value = btn.getAttribute('data-url');
             });
         });
+
+        // Gestione Banner Cookie con localStorage
+        (function() {
+            const banner = document.getElementById('cookieBanner');
+            const consent = localStorage.getItem('cookie_consent');
+            if (!consent && banner) {
+                banner.classList.remove('d-none');
+            }
+            function saveConsent(val) {
+                localStorage.setItem('cookie_consent', val);
+                if (banner) {
+                    banner.style.opacity = '0';
+                    banner.style.transform = 'translateY(100%)';
+                    setTimeout(() => banner.classList.add('d-none'), 300);
+                }
+            }
+            document.getElementById('cookieAccept')?.addEventListener('click', () => saveConsent('all'));
+            document.getElementById('cookieReject')?.addEventListener('click', () => saveConsent('essential'));
+        })();
     </script>
 </body>
 </html>

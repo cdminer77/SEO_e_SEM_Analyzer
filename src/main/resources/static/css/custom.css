@@ -9,6 +9,67 @@ body {
     transition: transform 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
+/* Fluid Padding Sezioni */
+.section-fluid-padding {
+    padding-top: clamp(40px, 6vw, 72px);
+    padding-bottom: clamp(40px, 6vw, 72px);
+}
+
+/* Hero Section 2 Colonne con altezza ottimizzata */
+.hero-section {
+    min-height: min(80vh, 640px);
+    display: flex;
+    align-items: center;
+}
+
+/* Griglie con stretch e gap uniforme 16-24px */
+.grid-gap-fluid {
+    gap: clamp(16px, 2vw, 24px);
+}
+
+/* Aspect Ratio per Immagini e Miniature per eliminare Cumulative Layout Shift (CLS) */
+.aspect-thumb {
+    aspect-ratio: 16 / 10;
+    object-fit: cover;
+}
+
+.aspect-logo {
+    aspect-ratio: 4 / 1;
+    object-fit: contain;
+}
+
+/* Banner Cookie Compatto Fisso in Basso */
+.cookie-banner {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 1080;
+    background: rgba(15, 23, 42, 0.96);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #f1f5f9;
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+    padding: 12px 20px;
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.25);
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.cookie-banner-text {
+    font-size: 0.85rem;
+    line-height: 1.4;
+    color: #cbd5e1;
+}
+
+.cookie-banner-text a {
+    color: #60a5fa;
+    text-decoration: underline;
+}
+
+.cookie-banner-text a:hover {
+    color: #93c5fd;
+}
+
 .nav-pills .nav-link {
     color: #475569;
     border-radius: 9999px;
